@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --output-path=dist/dice-counter --base-href=/browser/",
+    "build": "ng build --base-href=/browser/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

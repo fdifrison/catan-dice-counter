@@ -1,0 +1,32 @@
+<div class="setup-container text-center">
+  <!-- Game Name and Player Count -->
+  <div class="header-row mb-2">
+    <input type="text" class="form-control btn-catan-setup game-name-input" placeholder="Game Name" [(ngModel)]="gameName">
+    <select id="player-count" class="form-select btn-catan-setup player-count-dropdown" [(ngModel)]="playerCount" (change)="updatePlayers()">
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+  </div>
+
+  <!-- Player List -->
+  <div class="player-list mb-2">
+    <div class="player-card" *ngFor="let player of players; let i = index" [ngStyle]="{'background-color': getMutedColor(player.color)}">
+      <input type="text" class="form-control mb-1" placeholder="Name" [(ngModel)]="player.name">
+      <select class="form-select mb-1" [(ngModel)]="player.color" (change)="updatePlayerColor(i)">
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+        <option value="orange">Orange</option>
+        <option value="white">White</option>
+        <option value="green">Green</option>
+      </select>
+      <input type="number" class="form-control" min="1" [max]="playerCount" placeholder="Order" [(ngModel)]="player.order">
+    </div>
+  </div>
+
+  <!-- Start Game -->
+  <div class="controls">
+    <button class="btn-catan" (click)="startGame()">Start Game</button>
+  </div>
+</div>

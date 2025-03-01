@@ -1,23 +1,31 @@
 body {
-  background: url('https://www.textures.com/system/gallery/104/104086/Parchment0008_1_S.jpg') repeat;
-  font-family: 'Cinzel', serif; /* Catan-like font */
-  color: #d4af37; /* Shiny gold */
+  background: url('assets/main-bg.png') repeat; /* Relative path */
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
   margin: 0;
-  padding: 0;
+  padding: 60px 0;
+  animation: scroll-bg 30s linear infinite; /* Slower for subtlety */
 }
 
-h1, h2, h3 {
-  font-family: 'Cinzel', serif;
-  color: #d4af37; /* Gold */
-  text-shadow: 0 0 5px rgba(212, 175, 55, 0.8); /* Glow effect */
+@keyframes scroll-bg {
+  0% { background-position: 0 0; }
+  100% { background-position: -512px 0; } /* Diagonal shift */
 }
+
 .container {
   max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
-  background: rgba(255, 245, 238, 0.9); /* Semi-transparent peachpuff */
+  background: rgba(255, 245, 238, 0.2);
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h1, h2, h3 {
+  font-family: 'Cinzel', serif;
+  font-weight: bolder;
+  color: #d4af37; /* Gold */
+  text-shadow: 0 0 5px rgba(212, 175, 55, 0.8); /* Glow effect */
 }
 
 /* Player colors inspired by Catan */
@@ -27,11 +35,13 @@ h1, h2, h3 {
 .white { color: #ffffff; }
 
 .btn-catan {
-  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%); /* Brown gradient */
+  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
   color: #d4af37; /* Gold text */
+  font-weight: bolder;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); /* Glow effect */
   padding: 12px 24px;
   border: 2px solid #d4af37;
-  border-radius: 8px;
+  border-radius: 50px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5); /* Shadow + inner glow */
   font-family: 'Cinzel', serif;
   font-size: 18px;
@@ -40,7 +50,7 @@ h1, h2, h3 {
 }
 
 .btn-catan:hover {
-  background: linear-gradient(135deg, #a0522d 0%, #cd853f 100%); /* Lighter gradient */
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
   transform: translateY(-2px) scale(1.05); /* Lift and slight zoom */
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4), inset 0 1px 5px rgba(212, 175, 55, 0.7);
 }
@@ -48,4 +58,36 @@ h1, h2, h3 {
 @keyframes roll {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.top-stripe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px; /* Reduced for non-main */
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
+  z-index: 1000;
+}
+
+.top-stripe.main-page {
+  height: 50px; /* Full height on main */
+}
+
+.bottom-stripe {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
+  z-index: 1000;
+}
+
+.bottom-stripe.main-page {
+  height: 50px;
+}
+
+body {
+  padding: 50px 0; /* Adjusted for smaller stripes */
 }

@@ -135,7 +135,7 @@
                             <outputDirectory>${project.build.directory}/classes/static</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>frontend/dist/dice-counter</directory>
+                                    <directory>frontend/dist/frontend</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>

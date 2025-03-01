@@ -1,0 +1,117 @@
+.setup-container {
+  max-width: 100%;
+  margin: 2px auto;
+  padding: 2px;
+  background: rgba(255, 245, 238, 0.45); /* Single opacity */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.header-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 5px;
+}
+
+.game-name-input {
+  width: 250px;
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  background: rgba(139, 0, 0, 0.2); /* Consistent background */
+  border: 2px solid #d4af37;
+  border-radius: 5px;
+  font-weight: 700;
+  padding: 8px 0;
+  text-align: center;
+  font-size: 20px;
+  -webkit-text-stroke: 0.1px black;
+}
+
+.game-name-input::placeholder {
+  color: #d4af37;
+  -webkit-text-stroke: 0.1px black;
+}
+
+.player-count-dropdown {
+  width: 90px;
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  background: rgba(139, 0, 0, 0.2);
+  border: 2px solid #d4af37;
+  border-radius: 5px;
+  font-weight: 700;
+  padding: 8px 0;
+  text-align: center;
+  font-size: 20px;
+}
+
+.player-count-dropdown option {
+  color: #d4af37;
+  background: rgba(139, 0, 0, 0.2);
+  font-weight: 700;
+}
+
+.player-list {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  margin-bottom: 5px;
+}
+
+.player-card {
+  padding: 5px;
+  border-radius: 8px;
+  width: 150px;
+  min-width: 150px;
+}
+
+.form-control, .form-select {
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  background: rgba(139, 0, 0, 0.2);
+  border: 2px solid #d4af37;
+  border-radius: 5px;
+  font-weight: 700;
+  padding: 6px;
+  font-size: 22px;
+  text-align: center;
+}
+
+.form-control::placeholder {
+  color: #d4af37;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-catan {
+  width: 180px;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
+  color: #d4af37;
+  border: 2px solid #d4af37;
+  border-radius: 50px;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  -webkit-text-stroke: 0.1px black;
+}
+
+.btn-catan-setup {
+  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
+  color: #d4af37;
+  border: 2px solid #d4af37;
+  border-radius: 50px;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 22px;
+  text-align: center;
+}
+

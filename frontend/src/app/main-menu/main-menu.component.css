@@ -1,20 +1,20 @@
 .logo {
-  border: 3px solid #8b4513;
-  border-radius: 10px;
-  transition: transform 0.3s;
+  border: none; /* Remove border */
+  border-radius: 50%; /* Ensure circular shape */
+  transition: transform 0.3s; /* Keep animation */
 }
 
 .logo:hover {
-  transform: rotate(5deg) scale(1.1);
+  transform: rotate(5deg) scale(1.1); /* Fun hover effect */
 }
 
 .menu-options {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
 button {
-  width: 200px;
+  width: 250px;
   margin: 0 auto;
 }

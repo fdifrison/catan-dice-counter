@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common'; // For ngSrc
 
 @Component({
   selector: 'app-main-menu',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage], // Basic Angular features
+  imports: [CommonModule, NgOptimizedImage], // Add NgOptimizedImage
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.css']
 })

@@ -1,22 +1,23 @@
 .setup-container {
   max-width: 100%;
   margin: 0 auto;
-  padding: 50px 2px; /* Increased top padding, bottom padding for stripe */
+  padding: 20px 2px 20px 2px; /* Offset stripes (40px + buffer) */
   background: rgba(255, 245, 238, 0.5);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   min-height: calc(100vh - 80px); /* Full height minus stripes */
   display: flex;
   flex-direction: column;
+  overflow-y: auto; /* Scroll entire container */
 }
 
 .header-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
   margin-bottom: 5px;
-  padding: 5px;
+  padding: 2px;
   position: sticky; /* Sticks below top stripe */
   top: 40px; /* Below 40px stripe */
   z-index: 10; /* Above player list */
@@ -69,6 +70,7 @@
   margin-bottom: 5px;
   flex-grow: 1; /* Expand to fill space */
   align-items: flex-start; /* Start from top */
+  margin-top: 40px; /* Push below header */
 }
 
 .player-card {
@@ -85,8 +87,8 @@
   border: 2px solid #d4af37;
   border-radius: 5px;
   font-weight: 700;
-  padding: 6px;
-  font-size: 22px;
+  padding: 2px;
+  font-size: 20px;
   text-align: center;
 }
 
@@ -130,8 +132,9 @@
     flex-direction: column;
     flex-wrap: nowrap;
     overflow-x: hidden;
-    overflow-y: auto;
-    max-height: calc(120vh); /* Adjusted: stripes (80px) + header (45px) + button (25px) */
+    overflow-y: visible; /* Let container handle scroll */
+    max-height: calc(100vh - 80px); /* Adjusted: stripes (80px) + header (45px) + button (25px) */
+    margin-top: 60px; /* Consistent with landscape */
     align-items: center;
   }
 

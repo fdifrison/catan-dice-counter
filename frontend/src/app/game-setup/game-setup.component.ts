@@ -14,10 +14,11 @@ type PlayerColor = 'red' | 'blue' | 'orange' | 'white' | 'green'; // Union type
 })
 export class GameSetupComponent {
   gameName: string = '';
-  playerCount: number = 2;
+  playerCount: number = 3;
   players: { name: string; color: PlayerColor; order: number }[] = [
     { name: '', color: 'red', order: 1 },
-    { name: '', color: 'blue', order: 2 }
+    { name: '', color: 'blue', order: 2 },
+    { name: '', color: 'green', order: 3 }
   ];
 
   constructor(private router: Router) {}
@@ -34,17 +35,17 @@ export class GameSetupComponent {
   }
 
   getDefaultColor(index: number): PlayerColor {
-    const colors: PlayerColor[] = ['red', 'blue', 'orange', 'white', 'green'];
-    return colors[index - 1] || 'green';
+    const colors: PlayerColor[] = ['red', 'blue', 'green', 'white', 'orange'];
+    return colors[index - 1] || 'orange';
   }
 
   getMutedColor(color: PlayerColor): string {
     const mutedColors: { [key in PlayerColor]: string } = {
       red: 'rgba(139, 0, 0, 0.6)',
       blue: 'rgba(0, 0, 139, 0.6)',
-      orange: 'rgba(255, 140, 0, 0.6)',
+      green: 'rgba(0, 100, 0, 0.6)',
       white: 'rgba(245, 245, 245, 0.6)',
-      green: 'rgba(0, 100, 0, 0.6)'
+      orange: 'rgba(255, 140, 0, 0.6)'
     };
     return mutedColors[color]; // No fallback needed, all cases covered
   }

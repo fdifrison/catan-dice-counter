@@ -73,7 +73,7 @@ export class GameplayComponent implements OnInit, OnDestroy {
             position: 'bottom',
             labels: {
               font: {family: 'Cinzel', size: 20, weight: 800},
-              color: 'rgba(21,16,16,0.2)'
+              color: 'rgba(21,16,16,1)'
             }
           },
           title: {display: false}

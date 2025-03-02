@@ -49,7 +49,7 @@ h1, h2, h3 {
   top: 0;
   left: 0;
   width: 100%;
-  height: 40px;
+  height: 30px;
   background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
   z-index: 1000;
 }
@@ -63,7 +63,7 @@ h1, h2, h3 {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 40px;
+  height: 30px;
   background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
   z-index: 1000;
 }

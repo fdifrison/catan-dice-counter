@@ -1,23 +1,23 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Router, NavigationEnd } from '@angular/router';
-import { CommonModule } from '@angular/common'; // Add this
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule], // Add CommonModule
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  isGameplay: boolean = false;
+
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {}
+      if (event instanceof NavigationEnd) {
+        this.isGameplay = event.url === '/gameplay';
+      }
     });
-  }
-
-  isMainPage(): boolean {
-    return this.router.url === '/';
   }
 }

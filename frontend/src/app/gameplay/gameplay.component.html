@@ -1,0 +1,39 @@
+<div class="gameplay-container">
+  <!-- Player Info and Timer -->
+  <div class="player-info-box text-center">
+    <div class="player-turn">
+      <span class="current-player" [ngStyle]="{'color': getPlayerColor(players[currentPlayerIndex].color)}">
+        {{ players[currentPlayerIndex].name }} (Turn {{ turnNumber }})
+      </span>
+    </div>
+    <div class="timer">
+      <span>{{ turnDuration }}s</span>
+    </div>
+  </div>
+
+  <!-- Central: Graph and Buttons -->
+  <div class="central-content">
+    <div class="chart-container">
+      <canvas id="diceChart"></canvas>
+    </div>
+    <div class="dice-buttons">
+      <button *ngFor="let num of [2,3,4,5,6,7,8,9,10,11,12]" class="dice-btn"
+              [ngClass]="{'selected': selectedNumber === num}" (click)="rollDice(num)">
+        {{ num }}
+      </button>
+    </div>
+    <div class="controls">
+      <button class="btn-catan" (click)="endTurn()">End Turn</button>
+      <button class="btn-catan" (click)="showEndGameConfirmation()">End Game</button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" *ngIf="showEndGameModal">
+    <div class="modal-content">
+      <p>Are you sure you want to end the game?</p>
+      <button class="btn-catan" (click)="endGame(true)">Yes</button>
+      <button class="btn-catan" (click)="endGame(false)">No</button>
+    </div>
+  </div>
+</div>

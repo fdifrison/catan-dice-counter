@@ -1,1 +1,27 @@
-<p>end-game works!</p>
+<div class="end-game-container">
+  <!-- Player Ranking and Points -->
+  <div class="ranking-container">
+    <div class="player-list">
+      <div class="player-card" *ngFor="let player of players">
+        <span class="player-name" [ngStyle]="{'color': getPlayerColor(player.color)}">
+          {{ player.name }}
+        </span>
+        <input type="number" class="form-control" placeholder="Rank" min="1" [max]="players.length" [(ngModel)]="player.rank">
+        <input type="number" class="form-control" placeholder="Points" min="0" [(ngModel)]="player.points">
+      </div>
+    </div>
+    <div class="duration-container">
+      <div class="duration">Total Game Duration: {{ formatDuration(gameDuration) }}</div>
+      <button class="btn-catan confirm-btn" (click)="confirmEndGame()">Confirm</button>
+    </div>
+  </div>
+
+  <!-- Victory Modal -->
+  <div class="modal" *ngIf="showVictoryModal">
+    <div class="modal-content">
+      <p>Congratulations, {{ winner?.name }}! You’ve won the game!</p>
+      <button class="btn-catan" (click)="goToMainMenu()">Main Menu</button>
+      <button class="btn-catan" (click)="goToHistory()">View History</button>
+    </div>
+  </div>
+</div>

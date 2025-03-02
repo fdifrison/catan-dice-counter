@@ -182,6 +182,12 @@ export class GameplayComponent implements OnInit, OnDestroy {
   endGame(confirmed: boolean) {
     this.showEndGameModal = false;
     if (confirmed) {
+      const gameData = {
+        players: this.players,
+        rolls: this.diceRolls,
+        duration: this.diceRolls.reduce((acc, roll, idx) => acc + (idx + 1) * 10, 0) // Mock duration
+      };
+      localStorage.setItem('gameplayData', JSON.stringify(gameData));
       this.router.navigate(['/end-game']);
     }
   }

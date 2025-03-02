@@ -20,8 +20,10 @@
   <div class="modal" *ngIf="showVictoryModal">
     <div class="modal-content">
       <p>Congratulations, {{ winner?.name }}! You’ve won the game!</p>
-      <button class="btn-catan" (click)="goToMainMenu()">Main Menu</button>
-      <button class="btn-catan" (click)="goToHistory()">View History</button>
+      <div class="modal-buttons">
+        <button class="btn-catan modal-btn" (click)="goToMainMenu()">Main Menu</button>
+        <button class="btn-catan modal-btn" (click)="goToHistory()">View History</button>
+      </div>
     </div>
   </div>
 </div>

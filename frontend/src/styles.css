@@ -1,44 +1,44 @@
 body {
-  background: url('assets/main-bg.png') repeat; /* Corrected to PNG */
+  background: url('assets/main-bg.png') repeat;
   font-family: 'Cinzel', serif;
-  color: #d4af37; /* Gold */
+  color: #d4af37;
   margin: 0;
-  padding: 50px 0; /* Base padding for all pages */
-  animation: scroll-bg 30s linear infinite; /* Horizontal scroll */
+  padding: 50px 0;
+  animation: scroll-bg 30s linear infinite;
 }
 
 @keyframes scroll-bg {
   0% { background-position: 0 0; }
-  100% { background-position: -512px 0; } /* Horizontal only */
+  100% { background-position: -512px 0; }
 }
 
 /* Headings */
 h1, h2, h3 {
   font-family: 'Cinzel', serif;
-  font-weight: bolder; /* Your preference */
-  color: #d4af37; /* Gold */
-  text-shadow: 0 0 5px rgba(212, 175, 55, 0.8); /* Glow effect */
+  font-weight: bolder;
+  color: #d4af37;
+  text-shadow: 0 0 5px rgba(212, 175, 55, 0.8);
 }
 
 /* Buttons */
 .btn-catan {
-  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%); /* Your initial change */
-  color: #d4af37; /* Gold text */
-  font-weight: bolder; /* Your preference */
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); /* Glow effect, adjusted for readability */
-  padding: 12px 24px; /* Your padding */
+  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
+  color: #d4af37;
+  font-weight: bolder;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  padding: 12px 24px;
   border: 2px solid #d4af37;
-  border-radius: 50px; /* Your rounded style */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5); /* Your shadow */
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5);
   font-family: 'Cinzel', serif;
-  font-size: 18px; /* Your size */
-  text-transform: uppercase; /* Your style */
+  font-size: 18px;
+  text-transform: uppercase;
   transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
   cursor: pointer;
 }
 
 .btn-catan:hover {
-  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%); /* Your hover change */
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
   transform: translateY(-2px) scale(1.05);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4), inset 0 1px 5px rgba(212, 175, 55, 0.7);
 }
@@ -49,13 +49,13 @@ h1, h2, h3 {
   top: 0;
   left: 0;
   width: 100%;
-  height: 40px; /* Your reduced size */
-  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%); /* Your gradient */
+  height: 40px;
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
   z-index: 1000;
 }
 
 .top-stripe.main-page {
-  height: 50px; /* Your main page size */
+  height: 50px;
 }
 
 .bottom-stripe {
@@ -64,7 +64,7 @@ h1, h2, h3 {
   left: 0;
   width: 100%;
   height: 40px;
-  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%); /* Your gradient */
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
   z-index: 1000;
 }
 
@@ -72,7 +72,7 @@ h1, h2, h3 {
   height: 50px;
 }
 
-/* Modal (used in EndGameComponent) */
+/* Modal */
 .modal {
   position: fixed;
   top: 0;
@@ -83,7 +83,7 @@ h1, h2, h3 {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Below confetti */
+  z-index: 1000;
 }
 
 .modal-content {
@@ -95,10 +95,10 @@ h1, h2, h3 {
   color: #d4af37;
   font-weight: 700;
   font-size: 20px;
-  z-index: 1001; /* Above modal background, below confetti */
+  z-index: 1001;
 }
 
 /* Main page specific adjustment */
 .main-menu-container {
-  margin-top: 60px; /* Increased only for main page to avoid stripe overlap */
+  margin-top: 60px;
 }

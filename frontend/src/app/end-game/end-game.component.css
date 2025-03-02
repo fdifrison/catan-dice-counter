@@ -67,5 +67,16 @@
 }
 
 .confirm-btn {
-  margin: 0; /* Closer to duration */
+  margin: 0;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center; /* Center horizontally */
+}
+
+.modal-btn {
+  width: 300px; /* Fixed width */
 }

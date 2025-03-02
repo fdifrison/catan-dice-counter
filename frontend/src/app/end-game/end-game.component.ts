@@ -51,7 +51,7 @@ export class EndGameComponent implements OnInit {
   }
 
   confirmEndGame() {
-    const rankedPlayers = [...this.players].sort((a, b) => (a.rank || 999) - (b.rank || 999)); // Default high rank if unset
+    const rankedPlayers = [...this.players].sort((a, b) => (a.rank || 999) - (b.rank || 999));
     this.winner = rankedPlayers[0];
     this.showVictoryModal = true;
     this.startConfetti();
@@ -63,7 +63,7 @@ export class EndGameComponent implements OnInit {
       spread: 70,
       origin: { y: 0.6 },
       colors: ['#d4af37', '#8B0000', '#FFFFFF'],
-      zIndex: 1002 // Above modal
+      zIndex: 1002
     });
     setTimeout(() => {
       confetti({

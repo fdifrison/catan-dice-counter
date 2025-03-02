@@ -1,5 +1,11 @@
 .main-menu-container {
-  margin-top: 150px; /* Increased to avoid overlap with top stripe */
+  height: calc(100vh - 90px); /* Full height minus stripes */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Nearly centered */
+  align-items: center;
+  margin-top: -50px; /* Shift up slightly from exact center */
+  padding-top: 70px; /* Space from top stripe */
   text-align: center;
 }
 
@@ -16,10 +22,10 @@
 .menu-options {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px; /* Reduced from 20px */
 }
 
 button {
-  width: 220px;
+  width: 220px; /* Reduced from 250px */
   margin: 0 auto;
 }

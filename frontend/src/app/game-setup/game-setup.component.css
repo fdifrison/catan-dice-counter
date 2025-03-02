@@ -1,149 +1,151 @@
 .setup-container {
   max-width: 100%;
   margin: 0 auto;
-  padding: 20px 2px 20px 2px; /* Offset stripes (40px + buffer) */
-  background: rgba(255, 245, 238, 0.5);
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  min-height: calc(100vh - 80px); /* Full height minus stripes */
+  padding: 45px 5px 45px 5px;
+  min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
-  overflow-y: auto; /* Scroll entire container */
 }
 
 .header-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-bottom: 5px;
   padding: 2px;
-  position: sticky; /* Sticks below top stripe */
-  top: 40px; /* Below 40px stripe */
-  z-index: 10; /* Above player list */
 }
 
 .game-name-input {
-  width: 250px;
-  font-family: 'Cinzel', serif;
+  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
   color: #d4af37;
-  background: rgba(139, 0, 0, 0.2); /* Consistent background */
-  border: 2px solid #d4af37;
-  border-radius: 5px;
-  font-weight: 700;
-  padding: 8px 0;
+  font-weight: bolder;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  padding: 12px 24px;
+  border: 2px solid #d4af37 !important;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
   text-align: center;
-  font-size: 20px;
-  -webkit-text-stroke: 0.1px black;
+  width: 200px;
+  cursor: text;
+}
+
+.game-name-input:hover,
+.game-name-input:focus {
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
+  outline: none;
 }
 
 .game-name-input::placeholder {
   color: #d4af37;
-  -webkit-text-stroke: 0.1px black;
+  opacity: 0.8;
 }
 
 .player-count-dropdown {
-  width: 90px;
-  font-family: 'Cinzel', serif;
+  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
   color: #d4af37;
-  background: rgba(139, 0, 0, 0.2);
-  border: 2px solid #d4af37;
-  border-radius: 5px;
-  font-weight: 700;
-  padding: 8px 0;
+  font-weight: bolder;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  padding: 12px 24px;
+  border: 2px solid #d4af37 !important;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
   text-align: center;
-  font-size: 20px;
+  width: 80px; /* Widened from 60px */
+  cursor: pointer;
+  appearance: none;
+}
+
+.player-count-dropdown:hover,
+.player-count-dropdown:focus {
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
+  outline: none;
 }
 
 .player-count-dropdown option {
   color: #d4af37;
-  background: rgba(139, 0, 0, 0.2);
+  background: rgba(139, 0, 0, 0.8);
   font-weight: 700;
 }
 
 .player-list {
   display: flex;
+  flex-direction: column;
   gap: 5px;
-  justify-content: center;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  align-items: center;
+  margin-top: 5px;
   margin-bottom: 5px;
-  flex-grow: 1; /* Expand to fill space */
-  align-items: flex-start; /* Start from top */
-  margin-top: 40px; /* Push below header */
 }
 
 .player-card {
   padding: 5px;
   border-radius: 8px;
-  width: 150px;
-  min-width: 150px;
+  width: 180px;
+  min-width: 180px;
+  transition: transform 0.2s;
+}
+
+.player-card:hover {
+  transform: translateY(-5px);
+}
+
+.name-input {
+  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
+  color: #d4af37;
+  font-weight: bolder;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  padding: 12px 24px;
+  border: 2px solid #d4af37 !important;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 5px;
+  cursor: text;
+}
+
+.name-input:hover,
+.name-input:focus {
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
+  outline: none;
+}
+
+.name-input::placeholder {
+  color: #d4af37;
+  opacity: 0.8;
 }
 
 .form-control, .form-select {
   font-family: 'Cinzel', serif;
   color: #d4af37;
-  background: rgb(255, 255, 255, 0.7);
+  background: rgba(139, 0, 0, 0.2);
   border: 2px solid #d4af37;
   border-radius: 5px;
   font-weight: 700;
   padding: 2px;
-  font-size: 20px;
+  font-size: 18px;
   text-align: center;
 }
 
-.form-control::placeholder {
+.form-control::placeholder,
+.form-select::placeholder {
   color: #d4af37;
+  opacity: 0.8;
 }
 
 .controls {
   display: flex;
   justify-content: center;
+  margin-top: 5px;
 }
 
 .btn-catan {
   width: 180px;
-  padding: 8px 20px;
-  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
-  color: #d4af37;
-  border: 2px solid #d4af37;
-  border-radius: 50px;
-  font-family: 'Cinzel', serif;
-  font-weight: 700;
-  font-size: 20px;
-  text-align: center;
-  -webkit-text-stroke: 0.1px black;
-}
-
-.btn-catan-setup {
-  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
-  color: #d4af37;
-  border: 2px solid #d4af37;
-  border-radius: 50px;
-  font-family: 'Cinzel', serif;
-  font-weight: 700;
-  font-size: 22px;
-  text-align: center;
-}
-
-/* Portrait Mode */
-@media (orientation: portrait) {
-  .player-list {
-    flex-direction: column;
-    flex-wrap: nowrap;
-    overflow-x: hidden;
-    overflow-y: visible; /* Let container handle scroll */
-    max-height: calc(100vh - 80px); /* Adjusted: stripes (80px) + header (45px) + button (25px) */
-    margin-top: 60px; /* Consistent with landscape */
-    align-items: center;
-  }
-
-  .player-card {
-    width: 250px;
-    min-width: 250px;
-  }
-
-  .controls {
-    margin-bottom: 45px; /* Space above bottom stripe */
-  }
+  padding: 6px;
 }

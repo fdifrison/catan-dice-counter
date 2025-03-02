@@ -7,7 +7,7 @@ import Chart from 'chart.js/auto';
 interface Player {
   name: string;
   color: string;
-  order: number;
+  order: number; // Kept for compatibility, though unused now
 }
 
 interface Roll {
@@ -33,15 +33,16 @@ export class GameplayComponent implements OnInit, OnDestroy {
   turnNumber: number = 1;
   timerInterval: any;
   showEndGameModal: boolean = false;
+  gameName: string = ''; // Added to store game name
 
   constructor(private router: Router) {
-    const storedPlayers = JSON.parse(localStorage.getItem('gameSetup') || '{}');
-    this.players = storedPlayers.players || [
+    const setupData = JSON.parse(localStorage.getItem('gameSetup') || '{}');
+    this.players = setupData.players || [
       { name: 'Player 1', color: 'red', order: 1 },
       { name: 'Player 2', color: 'blue', order: 2 },
-      { name: 'Player 3', color: 'orange', order: 3 },
-      { name: 'Player 4', color: 'green', order: 4 }
+      { name: 'Player 3', color: 'orange', order: 3 }
     ];
+    this.gameName = setupData.gameName || 'Default Game'; // Pull game name from setup
   }
 
   ngOnInit() {
@@ -81,7 +82,7 @@ export class GameplayComponent implements OnInit, OnDestroy {
             ticks: {
               font: { family: 'Cinzel', size: 20, weight: 800 },
               color: '#d4af37'
-            },
+            }
           },
           y: {
             stacked: true,
@@ -185,7 +186,8 @@ export class GameplayComponent implements OnInit, OnDestroy {
       const gameData = {
         players: this.players,
         rolls: this.diceRolls,
-        duration: this.diceRolls.reduce((acc, roll, idx) => acc + (idx + 1) * 10, 0) // Mock duration
+        duration: this.diceRolls.reduce((acc, roll, idx) => acc + (idx + 1) * 10, 0),
+        gameName: this.gameName // Pass game name to end-game
       };
       localStorage.setItem('gameplayData', JSON.stringify(gameData));
       this.router.navigate(['/end-game']);

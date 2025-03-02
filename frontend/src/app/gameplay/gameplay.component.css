@@ -5,8 +5,18 @@
   min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
+
+.game-name {
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  font-weight: bolder;
+  text-shadow: 0 0 5px rgba(212, 175, 55, 0.8);
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
 
 .player-info-box {
   background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);

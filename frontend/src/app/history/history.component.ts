@@ -20,20 +20,19 @@ interface Game {
 })
 export class HistoryComponent implements OnInit {
   games: Game[] = [];
+  showDeleteModal: boolean = false;
+  gameToDelete: string | null = null;
 
   constructor(private router: Router) {}
 
   ngOnInit() {
-    // Load existing history
     this.games = JSON.parse(localStorage.getItem('gameHistory') || '[]');
-
-    // For testing: Clear and initialize mock data if empty
     if (this.games.length === 0) {
       console.log('No game history found, initializing mock data...');
       this.initializeMockData();
       this.games = JSON.parse(localStorage.getItem('gameHistory') || '[]');
     }
-    console.log('Loaded games:', this.games); // Debug log
+    console.log('Loaded games:', this.games);
   }
 
   initializeMockData() {
@@ -47,7 +46,7 @@ export class HistoryComponent implements OnInit {
           { name: 'Bob', color: 'blue', order: 2, rank: 2, points: 8 },
           { name: 'Charlie', color: 'green', order: 3, rank: 3, points: 6 }
         ],
-        duration: 3600, // 1 hour
+        duration: 3600,
         rolls: [
           { number: 7, playerIndex: 0 },
           { number: 6, playerIndex: 1 },
@@ -64,7 +63,7 @@ export class HistoryComponent implements OnInit {
           { name: 'Dave', color: 'white', order: 1, rank: 2, points: 7 },
           { name: 'Eve', color: 'orange', order: 2, rank: 1, points: 12 }
         ],
-        duration: 1800, // 30 minutes
+        duration: 1800,
         rolls: [
           { number: 4, playerIndex: 0 },
           { number: 10, playerIndex: 1 },
@@ -78,5 +77,23 @@ export class HistoryComponent implements OnInit {
 
   viewGameDetail(gameId: string) {
     this.router.navigate(['/game-history-detail', gameId]);
+  }
+
+  confirmDelete(gameId: string) {
+    this.gameToDelete = gameId;
+    this.showDeleteModal = true;
+  }
+
+  deleteGame(confirmed: boolean) {
+    if (confirmed && this.gameToDelete) {
+      this.games = this.games.filter(game => game.id !== this.gameToDelete);
+      localStorage.setItem('gameHistory', JSON.stringify(this.games));
+    }
+    this.showDeleteModal = false;
+    this.gameToDelete = null;
+  }
+
+  returnHome() {
+    this.router.navigate(['/']);
   }
 }

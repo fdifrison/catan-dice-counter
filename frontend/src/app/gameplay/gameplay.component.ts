@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Router} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 import Chart from 'chart.js/auto';
 
 interface Player {
@@ -38,11 +38,11 @@ export class GameplayComponent implements OnInit, OnDestroy {
   constructor(private router: Router) {
     const setupData = JSON.parse(localStorage.getItem('gameSetup') || '{}');
     this.players = setupData.players || [
-      { name: 'Player 1', color: 'red', order: 1 },
-      { name: 'Player 2', color: 'blue', order: 2 },
-      { name: 'Player 3', color: 'orange', order: 3 },
-      { name: 'Player 4', color: 'green', order: 4 },
-      { name: 'Player 5', color: 'white', order: 5 }
+      {name: 'Player 1', color: 'red', order: 1},
+      {name: 'Player 2', color: 'blue', order: 2},
+      {name: 'Player 3', color: 'orange', order: 3},
+      {name: 'Player 4', color: 'green', order: 4},
+      {name: 'Player 5', color: 'white', order: 5}
     ];
     this.gameName = setupData.gameName || 'Default Game'; // Pull game name from setup
   }
@@ -61,7 +61,7 @@ export class GameplayComponent implements OnInit, OnDestroy {
     this.chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: Array.from({ length: 11 }, (_, i) => (i + 2).toString()),
+        labels: Array.from({length: 11}, (_, i) => (i + 2).toString()),
         datasets: this.getStackedDatasets()
       },
       options: {
@@ -72,17 +72,17 @@ export class GameplayComponent implements OnInit, OnDestroy {
             display: true,
             position: 'bottom',
             labels: {
-              font: { family: 'Cinzel', size: 20, weight: 800},
+              font: {family: 'Cinzel', size: 20, weight: 800},
               color: 'rgba(21,16,16,0.2)'
             }
           },
-          title: { display: false }
+          title: {display: false}
         },
         scales: {
           x: {
             stacked: true,
             ticks: {
-              font: { family: 'Cinzel', size: 20, weight: 1000 },
+              font: {family: 'Cinzel', size: 20, weight: 1000},
               color: '#d4af37'
             }
           },
@@ -90,10 +90,11 @@ export class GameplayComponent implements OnInit, OnDestroy {
             stacked: true,
             beginAtZero: true,
             ticks: {
-              font: { family: 'Cinzel', size: 20, weight: 800 },
+              font: {family: 'Cinzel', size: 20, weight: 800},
               color: '#d4af37',
               stepSize: 1
-            }
+            },
+            grid: {color: '#d4af37', lineWidth: 1,}
           }
         }
       }
@@ -101,7 +102,7 @@ export class GameplayComponent implements OnInit, OnDestroy {
   }
 
   getStackedDatasets() {
-    const rollsByNumber: number[][] = Array.from({ length: 11 }, () => []);
+    const rollsByNumber: number[][] = Array.from({length: 11}, () => []);
     this.diceRolls.forEach(roll => {
       rollsByNumber[roll.number - 2].push(roll.playerIndex);
     });
@@ -150,7 +151,7 @@ export class GameplayComponent implements OnInit, OnDestroy {
 
   rollDice(number: number) {
     this.selectedNumber = number;
-    this.pendingRoll = { number, playerIndex: this.currentPlayerIndex };
+    this.pendingRoll = {number, playerIndex: this.currentPlayerIndex};
     this.updateChart();
     this.resetTimer();
   }

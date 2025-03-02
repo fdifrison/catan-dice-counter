@@ -1,8 +1,27 @@
 <div class="history-container">
   <div class="game-list">
-    <div class="game-card" *ngFor="let game of games" (click)="viewGameDetail(game.id)">
-      <span class="game-name">{{ game.name }}</span>
-      <span class="game-date">{{ game.date }}</span>
+    <div class="game-card" *ngFor="let game of games">
+      <div class="game-info">
+        <span class="game-name" (click)="viewGameDetail(game.id)">{{ game.name }}</span>
+        <span class="game-date">{{ game.date }}</span>
+      </div>
+      <div class="delete-container">
+        <button class="delete-btn" (click)="confirmDelete(game.id)">X</button>
+      </div>
+    </div>
+  </div>
+  <div class="return-home">
+    <button class="btn-catan" (click)="returnHome()">Return Home</button>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal" *ngIf="showDeleteModal">
+    <div class="modal-content">
+      <p>Are you sure you want to delete this game?</p>
+      <div class="modal-buttons">
+        <button class="btn-catan modal-btn" (click)="deleteGame(true)">Yes</button>
+        <button class="btn-catan modal-btn" (click)="deleteGame(false)">No</button>
+      </div>
     </div>
   </div>
 </div>

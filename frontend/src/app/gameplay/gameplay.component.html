@@ -1,14 +1,11 @@
 <div class="gameplay-container">
-  <div class="game-name">{{ gameName }}</div>
+
   <!-- Player Info and Timer -->
   <div class="player-info-box text-center">
     <div class="player-turn">
-      <span class="current-player" [ngStyle]="{'color': getPlayerColor(players[currentPlayerIndex].color)}">
-        {{ players[currentPlayerIndex].name }} (Turn {{ turnNumber }})
+      <span class="current-player" style="{'color':  #d4af37 }">
+        {{ players[currentPlayerIndex].name }} - Turn {{ turnNumber }} - {{ turnDuration }}s
       </span>
-    </div>
-    <div class="timer">
-      <span>{{ turnDuration }}s</span>
     </div>
   </div>
 

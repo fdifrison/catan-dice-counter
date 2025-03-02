@@ -43,9 +43,9 @@
 
 .timer {
   font-family: 'Cinzel', serif;
-  font-weight: 700;
-  font-size: 18px;
-  -webkit-text-stroke: 0.1px black;
+  font-weight: bolder;
+  font-size: 25px;
+  -webkit-text-stroke: 0.5px black;
   color: #d4af37;
 }
 
@@ -58,7 +58,7 @@
 }
 
 .chart-container {
-  height: 250px;
+  height: 350px;
   width: 100%;
   margin-bottom: 10px;
   position: relative;

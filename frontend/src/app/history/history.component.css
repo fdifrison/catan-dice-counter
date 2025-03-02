@@ -22,7 +22,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
 }
 
 .game-name {
@@ -30,6 +36,8 @@
   font-weight: 700;
   font-size: 20px;
   color: #d4af37;
+  cursor: pointer;
+  flex-grow: 1;
 }
 
 .game-date {
@@ -37,4 +45,39 @@
   font-weight: 700;
   font-size: 16px;
   color: #d4af37;
+}
+
+.delete-container {
+  margin-left: 10px;
+}
+
+.delete-btn {
+  background: none;
+  border: 2px solid #d4af37;
+  color: #d4af37;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: rgba(139, 0, 0, 0.4);
+}
+
+.return-home {
+  margin-top: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.modal-btn {
+  width: 150px;
 }

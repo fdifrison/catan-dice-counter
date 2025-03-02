@@ -1,0 +1,8 @@
+<div class="history-container">
+  <div class="game-list">
+    <div class="game-card" *ngFor="let game of games" (click)="viewGameDetail(game.id)">
+      <span class="game-name">{{ game.name }}</span>
+      <span class="game-date">{{ game.date }}</span>
+    </div>
+  </div>
+</div>

@@ -89,10 +89,16 @@ export class EndGameComponent implements OnInit {
 
   goToHistory() {
     const gameData = {
+      id: Date.now().toString(), // Unique ID based on timestamp
+      name: JSON.parse(localStorage.getItem('gameplayData') || '{}').gameName || 'Unnamed Game',
+      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
       players: this.players,
       duration: this.gameDuration,
       rolls: JSON.parse(localStorage.getItem('gameplayData') || '{}').rolls || []
     };
+    const history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+    history.push(gameData);
+    localStorage.setItem('gameHistory', JSON.stringify(history));
     localStorage.setItem('lastGame', JSON.stringify(gameData));
     this.router.navigate(['/history']);
   }

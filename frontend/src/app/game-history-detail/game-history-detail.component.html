@@ -1,0 +1,18 @@
+<div class="detail-container">
+  <div class="chart-container">
+    <canvas id="historyChart"></canvas>
+  </div>
+  <div class="ranking-container">
+    <div class="player-list">
+      <div class="player-card" *ngFor="let player of game?.players">
+        <span class="player-name" [ngStyle]="{'color': getPlayerColor(player.color)}">{{ player.name }}</span>
+        <span class="player-rank">Rank: {{ player.rank || 'N/A' }}</span>
+        <span class="player-points">Points: {{ player.points || 0 }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="chart-controls">
+    <button class="btn-catan" (click)="toggleChartType('bar')">Bar Chart</button>
+    <button class="btn-catan" (click)="toggleChartType('line')">Line Chart</button>
+  </div>
+</div>

@@ -40,7 +40,9 @@ export class GameplayComponent implements OnInit, OnDestroy {
     this.players = setupData.players || [
       { name: 'Player 1', color: 'red', order: 1 },
       { name: 'Player 2', color: 'blue', order: 2 },
-      { name: 'Player 3', color: 'orange', order: 3 }
+      { name: 'Player 3', color: 'orange', order: 3 },
+      { name: 'Player 4', color: 'green', order: 4 },
+      { name: 'Player 5', color: 'white', order: 5 }
     ];
     this.gameName = setupData.gameName || 'Default Game'; // Pull game name from setup
   }
@@ -70,8 +72,8 @@ export class GameplayComponent implements OnInit, OnDestroy {
             display: true,
             position: 'bottom',
             labels: {
-              font: { family: 'Cinzel', size: 20, weight: 800 },
-              color: '#d4af37'
+              font: { family: 'Cinzel', size: 20, weight: 800},
+              color: 'rgba(21,16,16,0.2)'
             }
           },
           title: { display: false }
@@ -80,7 +82,7 @@ export class GameplayComponent implements OnInit, OnDestroy {
           x: {
             stacked: true,
             ticks: {
-              font: { family: 'Cinzel', size: 20, weight: 800 },
+              font: { family: 'Cinzel', size: 20, weight: 1000 },
               color: '#d4af37'
             }
           },

@@ -4,8 +4,7 @@
   flex-direction: column;
   justify-content: center; /* Nearly centered */
   align-items: center;
-  margin-top: -50px; /* Shift up slightly from exact center */
-  padding-top: 70px; /* Space from top stripe */
+  margin-top: -100px; /* Shift up slightly from exact center */
   text-align: center;
 }
 

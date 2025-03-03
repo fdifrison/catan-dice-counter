@@ -1,0 +1,128 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-03-03-001
+      author: grok
+      changes:
+        - createTable:
+            tableName: game
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_timestamp
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_timestamp
+                  type: text
+        - createTable:
+            tableName: player
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: game_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_player_game
+                    references: game(id)
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: color
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: order_number
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rank
+                  type: int
+              - column:
+                  name: points
+                  type: int
+        - createTable:
+            tableName: roll
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: game_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_roll_game
+                    references: game(id)
+              - column:
+                  name: number
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: player_index
+                  type: int
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: turn
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: game_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_turn_game
+                    references: game(id)
+              - column:
+                  name: player_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_turn_player
+                    references: player(id)
+              - column:
+                  name: turn_number
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_timestamp
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_timestamp
+                  type: text
+                  constraints:
+                    nullable: false

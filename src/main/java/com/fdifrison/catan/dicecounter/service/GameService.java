@@ -16,6 +16,7 @@ import com.fdifrison.catan.dicecounter.repository.GameRepository;
 import com.fdifrison.catan.dicecounter.repository.PlayerRepository;
 import com.fdifrison.catan.dicecounter.repository.RollRepository;
 import com.fdifrison.catan.dicecounter.repository.TurnRepository;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,15 +51,28 @@ public class GameService {
         this.turnMapper = turnMapper;
     }
 
+    @Transactional(readOnly = true)
     public List<GameDTO> getAllGames() {
-        return gameRepository.findAll().stream()
+        List<Game> games = gameRepository.findAll();
+        games.forEach(game -> {
+            Hibernate.initialize(game.getPlayers());
+            Hibernate.initialize(game.getRolls());
+            Hibernate.initialize(game.getTurns());
+        });
+        return games.stream()
                 .map(gameMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public Optional<GameDTO> getGameById(Integer id) {  // Changed from Long
+    @Transactional(readOnly = true)
+    public Optional<GameDTO> getGameById(Integer id) {
         return gameRepository.findById(id)
-                .map(gameMapper::toDto);
+                .map(game -> {
+                    Hibernate.initialize(game.getPlayers());
+                    Hibernate.initialize(game.getRolls());
+                    Hibernate.initialize(game.getTurns());
+                    return gameMapper.toDto(game);
+                });
     }
 
     public long calculateGameDuration(GameDTO game) {
@@ -68,9 +82,9 @@ public class GameService {
         return Duration.between(game.startTimestamp(), game.endTimestamp()).getSeconds();
     }
 
-    public String findSlowestPlayer(Integer gameId) {  // Changed from Long
+    public String findSlowestPlayer(Integer gameId) {
         List<Turn> turns = turnRepository.findByGameId(gameId);
-        Map<Integer, Long> playerTurnDurations = turns.stream()  // Changed from Long
+        Map<Integer, Long> playerTurnDurations = turns.stream()
                 .collect(Collectors.groupingBy(
                         turn -> turn.getPlayer().getId(),
                         Collectors.summingLong(turn ->
@@ -86,17 +100,18 @@ public class GameService {
                         .orElse("Unknown"))
                 .orElse("No turns recorded");
     }
+
     @Transactional
     public GameDTO createGame(GameCreateDTO gameCreateDTO) {
         System.out.println("Starting createGame at " + Instant.now());
-        var gameId = UUID.randomUUID().hashCode();
         Game game = gameMapper.toEntity(gameCreateDTO);
-        game.setId(gameId);  // Assign ID
+        int gameId = UUID.randomUUID().hashCode();  // Generate unique ID
+        game.setId(gameId);
         List<Player> players = gameCreateDTO.players().stream()
                 .map(playerMapper::toEntity)
                 .peek(player -> {
                     player.setGame(game);
-                    player.setId(gameId);  // Assign ID
+                    player.setId(UUID.randomUUID().hashCode());  // Generate unique ID
                 })
                 .collect(Collectors.toList());
         game.setPlayers(players);
@@ -108,14 +123,14 @@ public class GameService {
     @Transactional
     public TurnDTO recordTurn(Integer gameId, TurnCreateDTO turnCreateDTO) {
         System.out.println("Starting recordTurn for gameId: " + gameId + " at " + Instant.now());
-        var turnId = UUID.randomUUID().hashCode();
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         Player player = playerRepository.findById(turnCreateDTO.playerId())
                 .orElseThrow(() -> new IllegalArgumentException("Player not found: " + turnCreateDTO.playerId()));
 
         Turn turn = turnMapper.toEntity(turnCreateDTO);
-        turn.setId(turnId);  // Assign ID
+        int turnId = UUID.randomUUID().hashCode();  // Generate unique ID
+        turn.setId(turnId);
         turn.setGame(game);
         turn.setPlayer(player);
 
@@ -123,7 +138,7 @@ public class GameService {
 
         if (turnCreateDTO.rollNumber() != null) {
             Roll roll = new Roll();
-            roll.setId(turnId);  // Assign ID
+            roll.setId(UUID.randomUUID().hashCode());  // Generate unique ID
             roll.setGame(game);
             roll.setNumber(turnCreateDTO.rollNumber());
             roll.setPlayerIndex(player.getOrder());
@@ -135,7 +150,7 @@ public class GameService {
     }
 
     @Transactional
-    public GameDTO endGame(Integer gameId, EndGameDTO endGameDTO) {  // Changed from Long
+    public GameDTO endGame(Integer gameId, EndGameDTO endGameDTO) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
 
@@ -154,7 +169,7 @@ public class GameService {
     }
 
     @Transactional
-    public void deleteGame(Integer gameId) {  // Changed from Long
+    public void deleteGame(Integer gameId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         gameRepository.delete(game);

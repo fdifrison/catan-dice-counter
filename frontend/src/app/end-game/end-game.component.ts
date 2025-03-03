@@ -1,30 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import confetti from 'canvas-confetti';
 import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-end-game',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './end-game.component.html',
   styleUrls: ['./end-game.component.css']
 })
 export class EndGameComponent implements OnInit {
   game: any = null;
-  players: any[] = [];
+  endGameForm!: FormGroup;  // Use ! to indicate it'll be assigned in constructor
   gameDuration: number = 0;
-
   showVictoryModal: boolean = false;
   winner: any | null = null;
 
-  constructor(private router: Router, private gameService: GameService) {
+  constructor(
+    private router: Router,
+    private gameService: GameService,
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
+  ) {
     this.game = history.state.game;
     if (this.game) {
-      this.players = this.game.players.map((p: any) => ({ ...p, rank: undefined, points: 0 }));
+      this.endGameForm = this.fb.group({
+        players: this.fb.array(this.game.players.map((p: any) => this.createPlayerFormGroup(p)))
+      });
     } else {
+      this.endGameForm = this.fb.group({
+        players: this.fb.array([])
+      });
       this.router.navigate(['/']);
     }
   }
@@ -32,32 +41,58 @@ export class EndGameComponent implements OnInit {
   ngOnInit() {
     if (this.game) {
       this.gameService.getGameDuration(this.game.id).subscribe({
-        next: (duration) => this.gameDuration = duration,
-        error: (err) => console.error('Failed to fetch game duration:', err)
+        next: (duration) => {
+          this.gameDuration = duration;
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Failed to fetch initial game duration:', err)
       });
     }
   }
 
+  createPlayerFormGroup(player: any): FormGroup {
+    return this.fb.group({
+      id: [player.id],
+      name: [player.name],
+      color: [player.color],
+      order: [player.order],
+      rank: [null, Validators.required],
+      points: [null, [Validators.required, Validators.min(0)]]
+    });
+  }
+
+  get players(): FormArray {
+    return this.endGameForm.get('players') as FormArray;
+  }
+
   getAvailableRanks(playerIndex: number): number[] {
     const totalPlayers = this.players.length;
-    const usedRanks = this.players
+    const usedRanks = this.players.controls
       .filter((_, i) => i !== playerIndex)
-      .map(p => p.rank)
-      .filter(r => r !== undefined);
+      .map(control => control.get('rank')?.value)
+      .filter(r => r !== null);
     return Array.from({ length: totalPlayers }, (_, i) => i + 1)
       .filter(rank => !usedRanks.includes(rank));
   }
 
   confirmEndGame() {
-    this.gameService.endGame(this.game.id, this.players).subscribe({
+    if (this.endGameForm.invalid) {
+      this.endGameForm.markAllAsTouched();
+      return;
+    }
+
+    const endGameData = this.players.value;
+
+    this.gameService.endGame(this.game.id, endGameData).subscribe({
       next: (updatedGame) => {
         this.game = updatedGame;
-        this.players = updatedGame.players.sort((a: any, b: any) => a.order - b.order);  // Ensure order
+        this.endGameForm.setControl('players', this.fb.array(updatedGame.players.map((p: any) => this.createPlayerFormGroup(p))));
         this.gameService.getGameDuration(this.game.id).subscribe({
           next: (duration) => {
             this.gameDuration = duration;
-            console.log('Updated game duration:', this.gameDuration);  // Debug
-            const rankedPlayers = [...this.players].sort((a: any, b: any) => (a.rank || 999) - (b.rank || 999));
+            console.log('Updated game duration:', this.gameDuration);
+            this.cdr.detectChanges();
+            const rankedPlayers = [...this.players.value].sort((a: any, b: any) => (a.rank || 999) - (b.rank || 999));
             this.winner = rankedPlayers[0];
             this.showVictoryModal = true;
             this.startConfetti();

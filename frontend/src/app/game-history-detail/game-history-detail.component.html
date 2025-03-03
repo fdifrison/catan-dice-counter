@@ -7,7 +7,7 @@
   </div>
   <div class="ranking-container">
     <div class="player-list">
-      <div class="player-card" *ngFor="let player of game?.players">
+      <div class="player-card" *ngFor="let player of game?.players | sortByRank">
         <span class="player-name" [ngStyle]="{'color': getPlayerColor(player.color)}">{{ player.name }}</span>
         <span class="player-rank">Rank: {{ player.rank || 'N/A' }}</span>
         <span class="player-points">Points: {{ player.points || 0 }}</span>

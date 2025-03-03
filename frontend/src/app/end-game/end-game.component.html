@@ -1,32 +1,39 @@
 <div class="end-game-container">
-  <!-- Player Ranking and Points -->
-  <div class="ranking-container">
-    <div class="player-list">
-      <div class="player-card" *ngFor="let player of players; let i = index">
-        <span class="player-name" [ngStyle]="{'color': getPlayerColor(player.color)}">
-          {{ player.name }}
-        </span>
-        <select class="form-control rank-select" [(ngModel)]="player.rank">
-          <option [value]="undefined" disabled selected>Rank</option>
+  <form [formGroup]="endGameForm" (ngSubmit)="confirmEndGame()">
+    <div class="player-list" formArrayName="players">
+      <div class="player-card" *ngFor="let player of players.controls; let i = index" [formGroupName]="i">
+        <span class="player-name" [ngStyle]="{'color': getPlayerColor(player.get('color')?.value)}">{{ player.get('name')?.value }}</span>
+        <select class="rank-select" formControlName="rank">
           <option *ngFor="let rank of getAvailableRanks(i)" [value]="rank">{{ rank }}</option>
         </select>
-        <input type="number" class="form-control" placeholder="Points" min="0" [(ngModel)]="player.points">
+        <input class="points-input" type="number" formControlName="points" placeholder="Score" min="0" required>
+        <div *ngIf="player.get('points')?.touched && player.get('points')?.errors?.['required']" class="error">
+          Points are required
+        </div>
+        <div *ngIf="player.get('points')?.touched && player.get('points')?.errors?.['min']" class="error">
+          Points must be non-negative
+        </div>
       </div>
     </div>
-    <div class="duration-container">
-      <div class="duration">Total Game Duration: {{ formatDuration(gameDuration) }}</div>
-      <button class="btn-catan confirm-btn" (click)="confirmEndGame()">Confirm</button>
+    <div class="end-game-controls">
+      <button class="btn-catan" type="submit">Confirm</button>
+      <button class="btn-catan" type="button" (click)="goToMainMenu()">Main Menu</button>
+    </div>
+  </form>
+  <div class="modal-overlay" *ngIf="showVictoryModal">
+    <div class="modal-content">
+      <h3 class="modal-title">Victory!</h3>
+      <div class="winner-announcement">
+        <span class="winner-name" [ngStyle]="{'color': getPlayerColor(winner.color)}">{{ winner.name }}</span>
+        <span class="winner-text">has won the game!</span>
+      </div>
+      <div class="modal-controls">
+        <button class="btn-catan" (click)="goToMainMenu()">Main Menu</button>
+        <button class="btn-catan" (click)="goToHistory()">History</button>
+      </div>
     </div>
   </div>
-
-  <!-- Victory Modal -->
-  <div class="modal" *ngIf="showVictoryModal">
-    <div class="modal-content">
-      <p>Congratulations, {{ winner?.name }}! You’ve won the game!</p>
-      <div class="modal-buttons">
-        <button class="btn-catan modal-btn" (click)="goToMainMenu()">Main Menu</button>
-        <button class="btn-catan modal-btn" (click)="goToHistory()">View History</button>
-      </div>
-    </div>
+  <div class="duration-container">
+    <button class="btn-catan duration-btn">Total Game Duration: {{ formatDuration(gameDuration) }}</button>
   </div>
 </div>

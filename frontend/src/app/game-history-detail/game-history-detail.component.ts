@@ -3,11 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Chart from 'chart.js/auto';
 import { GameService } from '../services/game.service';
+import { SortByRankPipe } from '../pipes/sort-by-rank.pipe';  // Import the pipe
 
 @Component({
   selector: 'app-game-history-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SortByRankPipe],  // Add the pipe to imports
   templateUrl: './game-history-detail.component.html',
   styleUrls: ['./game-history-detail.component.css']
 })

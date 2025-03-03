@@ -5,79 +5,133 @@
   min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-
-.ranking-container {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
   align-items: center;
 }
-
 .player-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 15px;
+  width: 100%;
+  max-width: 350px;
 }
-
 .player-card {
   padding: 10px;
-  border-radius: 8px;
-  width: 300px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
   background: linear-gradient(135deg, hsla(0, 100%, 27%, 0.8) 20%, hsla(4, 81%, 49%, 0.8) 100%);
-  border: 2px solid #d4af37 !important;
+  border-radius: 8px;
+  border: 2px solid #d4af37;
 }
-
 .player-name {
   font-family: 'Cinzel', serif;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 18px;
   flex-grow: 1;
+  margin-right: 10px;
 }
-
-.form-control {
+.rank-select {
   font-family: 'Cinzel', serif;
-  color: #d4af37;
-  background: rgba(139, 0, 0, 0.2);
-  border: 2px solid #d4af37;
-  border-radius: 5px;
+  font-size: 16px;
   font-weight: 700;
-  padding: 6px;
-  font-size: 20px;
-  width: 80px;
-  text-align: center;
+  color: #151010;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.8) 20%, rgba(255, 215, 0, 0.8) 100%);
+  border: 2px solid #151010;
+  border-radius: 50px;
+  margin-right: 10px;
+  padding: 2px 10px;
+  cursor: pointer;
 }
-
-.duration-container {
+.points-input {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  border: 2px solid #151010;
+  border-radius: 50px;
+  width: 75px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.8) 20%, rgba(255, 215, 0, 0.8) 100%);
+  padding-left: 10px;
+}
+.end-game-controls {
   display: flex;
   flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+.btn-catan {
+  width: 275px;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
+  z-index: 1000;
 }
-
-.duration {
+.modal-content {
+  background: linear-gradient(135deg, hsla(0, 100%, 27%, 0.8) 20%, hsla(4, 81%, 49%, 0.8) 100%);
+  border: 2px solid #d4af37;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  width: 80%;
+  max-width: 450px;
+}
+.modal-title {
   font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 900;
   color: #d4af37;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  margin-bottom: 15px;
+}
+.winner-announcement {
+  margin-bottom: 15px;
+}
+.winner-name {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
   font-weight: 700;
-  font-size: 20px;
 }
-
-.confirm-btn {
-  margin: 0;
+.winner-text {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #d4af37;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
-
-.modal-buttons {
+.modal-controls {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  align-items: center; /* Center horizontally */
+  gap: 15px;
 }
-
-.modal-btn {
-  width: 300px; /* Fixed width */
+.duration-container {
+  margin-top: 15px;
+}
+.duration-btn {
+  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
+  color: #d4af37;
+  font-weight: bolder;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  padding: 5px 24px;
+  border: 2px solid #d4af37;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  text-align: center;
+  width: 275px;
+}
+.duration-btn:hover {
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
+}
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
 }

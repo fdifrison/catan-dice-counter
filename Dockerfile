@@ -6,9 +6,17 @@ RUN npm install
 COPY frontend/ .
 RUN npm run build -- --configuration production
 
-# Stage 2: Build Backend
-FROM maven:3.9.6-eclipse-temurin-23 AS backend-build
+# Stage 2: Build Backend with Maven installed
+FROM eclipse-temurin:23-jdk AS backend-build
 WORKDIR /app/backend
+# Install Maven 3.9.6
+ARG MAVEN_VERSION=3.9.6
+RUN apt-get update && apt-get install -y curl \
+    && curl -fsSL -o /tmp/maven.tar.gz https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+    && tar -xzf /tmp/maven.tar.gz -C /usr/local/ \
+    && ln -s /usr/local/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn \
+    && rm /tmp/maven.tar.gz \
+    && apt-get purge -y curl && apt-get autoremove -y && apt-get clean
 COPY backend/pom.xml .
 RUN mvn dependency:go-offline
 COPY backend/ .

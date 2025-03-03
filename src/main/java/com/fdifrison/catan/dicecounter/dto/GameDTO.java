@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.List;
 
 public record GameDTO(
-        Long id,
+        Integer id,
         String name,
         Instant startTimestamp,
         Instant endTimestamp,

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface TurnRepository extends JpaRepository<Turn, Long> {
+public interface TurnRepository extends JpaRepository<Turn, Integer> {
     @Query("SELECT t FROM Turn t WHERE t.game.id = :gameId")
-    List<Turn> findByGameId(Long gameId);
+    List<Turn> findByGameId(Integer gameId);
 }

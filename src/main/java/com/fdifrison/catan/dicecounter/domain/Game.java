@@ -14,8 +14,8 @@ import java.util.List;
 @Setter
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
     @Column(nullable = false)
     private String name;

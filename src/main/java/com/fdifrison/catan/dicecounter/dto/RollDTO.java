@@ -1,7 +1,7 @@
 package com.fdifrison.catan.dicecounter.dto;
 
 public record RollDTO(
-        Long id,
+        Integer id,
         int number,
         int playerIndex
 ) {

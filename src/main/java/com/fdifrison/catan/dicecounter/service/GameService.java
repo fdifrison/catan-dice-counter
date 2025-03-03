@@ -55,7 +55,7 @@ public class GameService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<GameDTO> getGameById(Long id) {
+    public Optional<GameDTO> getGameById(Integer id) {  // Changed from Long
         return gameRepository.findById(id)
                 .map(gameMapper::toDto);
     }
@@ -67,9 +67,9 @@ public class GameService {
         return Duration.between(game.startTimestamp(), game.endTimestamp()).getSeconds();
     }
 
-    public String findSlowestPlayer(Long gameId) {
+    public String findSlowestPlayer(Integer gameId) {  // Changed from Long
         List<Turn> turns = turnRepository.findByGameId(gameId);
-        Map<Long, Long> playerTurnDurations = turns.stream()
+        Map<Integer, Long> playerTurnDurations = turns.stream()  // Changed from Long
                 .collect(Collectors.groupingBy(
                         turn -> turn.getPlayer().getId(),
                         Collectors.summingLong(turn ->
@@ -99,7 +99,7 @@ public class GameService {
     }
 
     @Transactional
-    public TurnDTO recordTurn(Long gameId, TurnCreateDTO turnCreateDTO) {
+    public TurnDTO recordTurn(Integer gameId, TurnCreateDTO turnCreateDTO) {  // Changed from Long
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         Player player = playerRepository.findById(turnCreateDTO.playerId())
@@ -122,13 +122,12 @@ public class GameService {
     }
 
     @Transactional
-    public GameDTO endGame(Long gameId, EndGameDTO endGameDTO) {
+    public GameDTO endGame(Integer gameId, EndGameDTO endGameDTO) {  // Changed from Long
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
 
         game.setEndTimestamp(Instant.now());
 
-        // Update player rankings and points
         endGameDTO.players().forEach(playerEnd -> {
             Player player = playerRepository.findById(playerEnd.id())
                     .orElseThrow(() -> new IllegalArgumentException("Player not found: " + playerEnd.id()));
@@ -142,7 +141,7 @@ public class GameService {
     }
 
     @Transactional
-    public void deleteGame(Long gameId) {
+    public void deleteGame(Integer gameId) {  // Changed from Long
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         gameRepository.delete(game);

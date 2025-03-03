@@ -8,8 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
-                  autoIncrement: true
+                  type: integer
                   constraints:
                     primaryKey: true
               - column:
@@ -30,13 +29,12 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
-                  autoIncrement: true
+                  type: integer
                   constraints:
                     primaryKey: true
               - column:
                   name: game_id
-                  type: bigint
+                  type: integer
                   constraints:
                     nullable: false
                     foreignKeyName: fk_player_game
@@ -67,13 +65,12 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
-                  autoIncrement: true
+                  type: integer
                   constraints:
                     primaryKey: true
               - column:
                   name: game_id
-                  type: bigint
+                  type: integer
                   constraints:
                     nullable: false
                     foreignKeyName: fk_roll_game
@@ -93,20 +90,19 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: bigint
-                  autoIncrement: true
+                  type: integer
                   constraints:
                     primaryKey: true
               - column:
                   name: game_id
-                  type: bigint
+                  type: integer
                   constraints:
                     nullable: false
                     foreignKeyName: fk_turn_game
                     references: game(id)
               - column:
                   name: player_id
-                  type: bigint
+                  type: integer
                   constraints:
                     nullable: false
                     foreignKeyName: fk_turn_player

@@ -1,7 +1,9 @@
 package com.fdifrison.catan.dicecounter.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record PlayerCreateDTO(
-        String name,
+        @NotBlank(message = "Player name cannot be blank") String name,
         String color,
         int order
 ) {

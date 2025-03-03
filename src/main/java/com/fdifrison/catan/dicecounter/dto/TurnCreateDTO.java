@@ -1,5 +1,6 @@
 package com.fdifrison.catan.dicecounter.dto;
 
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 public record TurnCreateDTO(
@@ -7,6 +8,6 @@ public record TurnCreateDTO(
         int turnNumber,
         Instant startTimestamp,
         Instant endTimestamp,
-        Integer rollNumber  // Optional, null if no roll occurred this turn
+        @NotNull(message = "Roll number cannot be null") Integer rollNumber
 ) {
 }

@@ -7,6 +7,7 @@ import com.fdifrison.catan.dicecounter.domain.Turn;
 import com.fdifrison.catan.dicecounter.dto.EndGameDTO;
 import com.fdifrison.catan.dicecounter.dto.GameCreateDTO;
 import com.fdifrison.catan.dicecounter.dto.GameDTO;
+import com.fdifrison.catan.dicecounter.dto.PlayerEndDTO;
 import com.fdifrison.catan.dicecounter.dto.TurnCreateDTO;
 import com.fdifrison.catan.dicecounter.dto.TurnDTO;
 import com.fdifrison.catan.dicecounter.mapper.GameMapper;
@@ -16,9 +17,11 @@ import com.fdifrison.catan.dicecounter.repository.GameRepository;
 import com.fdifrison.catan.dicecounter.repository.PlayerRepository;
 import com.fdifrison.catan.dicecounter.repository.RollRepository;
 import com.fdifrison.catan.dicecounter.repository.TurnRepository;
+import jakarta.validation.Valid;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -28,6 +31,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Validated
 @Service
 public class GameService {
 
@@ -77,9 +81,12 @@ public class GameService {
 
     public long calculateGameDuration(GameDTO game) {
         if (game.endTimestamp() == null || game.startTimestamp() == null) {
+            System.out.println("Game duration not calculated: endTimestamp=" + game.endTimestamp() + ", startTimestamp=" + game.startTimestamp());
             return 0L;
         }
-        return Duration.between(game.startTimestamp(), game.endTimestamp()).getSeconds();
+        long duration = Duration.between(game.startTimestamp(), game.endTimestamp()).getSeconds();
+        System.out.println("Calculated game duration: " + duration + " seconds");
+        return duration;
     }
 
     public String findSlowestPlayer(Integer gameId) {
@@ -102,16 +109,16 @@ public class GameService {
     }
 
     @Transactional
-    public GameDTO createGame(GameCreateDTO gameCreateDTO) {
+    public GameDTO createGame(@Valid GameCreateDTO gameCreateDTO) {
         System.out.println("Starting createGame at " + Instant.now());
         Game game = gameMapper.toEntity(gameCreateDTO);
-        int gameId = UUID.randomUUID().hashCode();  // Generate unique ID
+        int gameId = UUID.randomUUID().hashCode();
         game.setId(gameId);
         List<Player> players = gameCreateDTO.players().stream()
                 .map(playerMapper::toEntity)
                 .peek(player -> {
                     player.setGame(game);
-                    player.setId(UUID.randomUUID().hashCode());  // Generate unique ID
+                    player.setId(UUID.randomUUID().hashCode());
                 })
                 .collect(Collectors.toList());
         game.setPlayers(players);
@@ -121,7 +128,7 @@ public class GameService {
     }
 
     @Transactional
-    public TurnDTO recordTurn(Integer gameId, TurnCreateDTO turnCreateDTO) {
+    public TurnDTO recordTurn(Integer gameId, @Valid TurnCreateDTO turnCreateDTO) {
         System.out.println("Starting recordTurn for gameId: " + gameId + " at " + Instant.now());
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
@@ -136,11 +143,11 @@ public class GameService {
 
         Turn savedTurn = turnRepository.save(turn);
 
-        if (turnCreateDTO.rollNumber() != null) {
+        if (turnCreateDTO.rollNumber() != null) {  // Already validated as @NotNull
             Roll roll = new Roll();
             roll.setId(UUID.randomUUID().hashCode());
             roll.setGame(game);
-            roll.setTurn(savedTurn);  // Link to Turn
+            roll.setTurn(savedTurn);
             roll.setNumber(turnCreateDTO.rollNumber());
             roll.setPlayerIndex(player.getOrder());
             rollRepository.save(roll);
@@ -151,10 +158,17 @@ public class GameService {
     }
 
     @Transactional
-    public GameDTO endGame(Integer gameId, EndGameDTO endGameDTO) {
+    public GameDTO endGame(Integer gameId, @Valid EndGameDTO endGameDTO) {
+        // Validate exclusive ranks
+        List<Integer> ranks = endGameDTO.players().stream()
+                .map(PlayerEndDTO::rank)
+                .toList();
+        if (ranks.stream().distinct().count() != ranks.size()) {
+            throw new IllegalArgumentException("Ranks must be exclusive");
+        }
+
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
-
         game.setEndTimestamp(Instant.now());
 
         endGameDTO.players().forEach(playerEnd -> {

@@ -1,8 +1,10 @@
 package com.fdifrison.catan.dicecounter.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public record PlayerEndDTO(
         Integer id,
-        Integer rank,
+        @NotNull(message = "Rank cannot be null") Integer rank,
         Integer points
 ) {
 }

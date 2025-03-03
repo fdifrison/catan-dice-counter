@@ -7,7 +7,15 @@
   flex-direction: column;
   align-items: center;
 }
-
+.duration-container {
+  margin-bottom: 15px;
+}
+.duration {
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  font-weight: 700;
+  font-size: 20px;
+}
 .chart-container {
   height: 400px;
   width: 100%;
@@ -17,7 +25,6 @@
   border-radius: 8px;
   border: 2px solid #d4af37;
 }
-
 .ranking-container {
   display: flex;
   flex-direction: column;
@@ -25,7 +32,6 @@
   margin-bottom: 15px;
   width: 100%;
 }
-
 .player-list {
   display: flex;
   flex-direction: column;
@@ -33,7 +39,6 @@
   width: 100%;
   max-width: 350px;
 }
-
 .player-card {
   padding: 5px;
   display: flex;
@@ -43,41 +48,56 @@
   border-radius: 8px;
   border: 2px solid #d4af37;
 }
-
 .player-name {
   font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 18px;
   flex-grow: 1;
-  margin-right: 10px; /* Add spacing after name */
+  margin-right: 10px;
 }
-
 .player-rank {
   font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 16px;
   color: #d4af37;
-  margin-right: 15px; /* Space between rank and points */
+  margin-right: 15px;
 }
-
 .player-points {
   font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 16px;
   color: #d4af37;
 }
-
 .chart-controls {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin-bottom: 15px;
 }
-
 .btn-catan {
   width: 275px;
 }
-
 .return-home {
   margin-bottom: 15px;
+}
+
+.duration-container {
+  margin-bottom: 15px;
+}
+.duration-btn {
+  background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
+  color: #d4af37;
+  font-weight: bolder;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  padding: 5px 24px;
+  border: 2px solid #d4af37;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  text-align: center;
+  width: 275px;
+}
+.duration-btn:hover {
+  background: linear-gradient(135deg, #8B0000 20%, #f64232 100%);
 }

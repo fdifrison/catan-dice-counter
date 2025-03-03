@@ -13,8 +13,9 @@ import { GameService } from '../services/game.service';
 })
 export class GameHistoryDetailComponent implements OnInit {
   game: any = null;
+  gameDuration: number = 0;
   chart: Chart | undefined;
-  chartType: 'bar' | 'roll-sequence' = 'bar';
+  chartType: 'bar' | 'roll-sequence' | 'time-management' = 'bar';
 
   constructor(
     private route: ActivatedRoute,
@@ -25,7 +26,13 @@ export class GameHistoryDetailComponent implements OnInit {
     this.gameService.getGameById(gameId).subscribe({
       next: (game) => {
         this.game = game;
-        this.initChart();
+        this.gameService.getGameDuration(gameId).subscribe({
+          next: (duration) => {
+            this.gameDuration = duration;
+            this.initChart();
+          },
+          error: (err) => console.error('Failed to fetch game duration:', err)
+        });
       },
       error: (err) => {
         console.error('Failed to load game:', err);
@@ -38,6 +45,8 @@ export class GameHistoryDetailComponent implements OnInit {
 
   initChart() {
     if (!this.game) return;
+    console.log('Game turns:', this.game.turns);
+    console.log('Game rolls:', this.game.rolls);
     const ctx = document.getElementById('historyChart') as HTMLCanvasElement;
     if (this.chart) this.chart.destroy();
 
@@ -61,7 +70,7 @@ export class GameHistoryDetailComponent implements OnInit {
           }
         }
       });
-    } else {  // roll-sequence
+    } else if (this.chartType === 'roll-sequence') {
       this.chart = new Chart(ctx, {
         type: 'bubble',
         data: {
@@ -69,8 +78,8 @@ export class GameHistoryDetailComponent implements OnInit {
             label: player.name,
             data: this.game.turns
               .map((turn: any) => {
-                const roll = this.game.rolls.find((r: any) => r.turnId === turn.id);
-                return roll && roll.playerIndex === i ? { x: roll.number, y: turn.turnNumber, r: 6 } : null;
+                const roll = this.game.rolls.find((r: any) => r.turnId === turn.id && r.playerIndex === i);
+                return roll ? { x: roll.number, y: turn.turnNumber, r: 6 } : null;
               })
               .filter((d: any) => d !== null),
             backgroundColor: this.getPlayerColor(player.color),
@@ -86,20 +95,41 @@ export class GameHistoryDetailComponent implements OnInit {
             title: { display: false }
           },
           scales: {
-            x: {
-              title: { display: true, text: 'Dice Outcome', font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' },
-              ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37', stepSize: 1 },
-              min: 2,
-              max: 12,
-              grid: { color: '#d4af37', lineWidth: 2 }
-            },
-            y: {
-              title: { display: true, text: 'Turn Number', font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' },
-              ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37', stepSize: 1 },
-              min: 1,
-              max: Math.max(...this.game.turns.map((t: any) => t.turnNumber)) + 1,
-              grid: { color: '#d4af37', lineWidth: 0.5 }
-            }
+            x: { title: { display: true, text: 'Dice Outcome', font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' }, ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37', stepSize: 1 }, min: 2, max: 12, grid: { color: '#d4af37', lineWidth: 2 } },
+            y: { title: { display: true, text: 'Turn Number', font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' }, ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37', stepSize: 1 }, min: 1, max: Math.max(...this.game.turns.map((t: any) => t.turnNumber)) + 1, grid: { color: '#d4af37', lineWidth: 0.5 } }
+          }
+        }
+      });
+    } else if (this.chartType === 'time-management') {
+      const playerTimes = this.game.players.map((player: any) => {
+        const playerTurns = this.game.turns.filter((t: any) => t.playerId === player.id);
+        return playerTurns.reduce((sum: number, turn: any) => {
+          return sum + (new Date(turn.endTimestamp).getTime() - new Date(turn.startTimestamp).getTime()) / 60000;  // Convert to minutes
+        }, 0);
+      });
+
+      this.chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: this.game.players.map((p: any) => p.name),
+          datasets: [{
+            label: 'Total Time Played (minutes)',
+            data: playerTimes,
+            backgroundColor: this.game.players.map((p: any) => this.getPlayerColor(p.color)),
+            borderColor: '#000000',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Total Time Played by Player', font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' }
+          },
+          scales: {
+            x: { ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' }, grid: { display: false } },
+            y: { ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37', stepSize: 1 }, grid: { color: '#d4af37', lineWidth: 2 }, beginAtZero: true }
           }
         }
       });
@@ -111,9 +141,10 @@ export class GameHistoryDetailComponent implements OnInit {
     this.game.rolls.forEach((roll: any) => {
       rollsByNumber[roll.number - 2].push(roll.playerIndex);
     });
+    console.log('Rolls by number:', rollsByNumber);  // Debug
     return this.game.players.map((player: any, i: number) => {
       const playerColor = this.getPlayerColor(player.color);
-      const playerRolls = rollsByNumber.map(rolls => rolls.filter(idx => idx === i).length || null);
+      const playerRolls = rollsByNumber.map(rolls => rolls.filter(idx => idx === i).length);
       return {
         label: player.name,
         data: playerRolls,
@@ -122,7 +153,7 @@ export class GameHistoryDetailComponent implements OnInit {
         borderWidth: 1,
         categoryPercentage: 0.8
       };
-    }).filter((ds: any) => ds.data.some((val: any) => val !== null));
+    });  // Removed filtering to include all players
   }
 
   getPlayerColor(color: string): string {
@@ -136,9 +167,16 @@ export class GameHistoryDetailComponent implements OnInit {
     return colors[color] || '#000000';
   }
 
-  toggleChartType(type: 'bar' | 'roll-sequence') {
+  toggleChartType(type: 'bar' | 'roll-sequence' | 'time-management') {
     this.chartType = type;
     this.initChart();
+  }
+
+  formatDuration(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours}h ${minutes}m ${secs}s`;
   }
 
   returnHome() {

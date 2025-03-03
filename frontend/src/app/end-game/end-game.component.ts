@@ -15,7 +15,8 @@ import { GameService } from '../services/game.service';
 export class EndGameComponent implements OnInit {
   game: any = null;
   players: any[] = [];
-  gameDuration: number = 0;  // Added property
+  gameDuration: number = 0;
+
   showVictoryModal: boolean = false;
   winner: any | null = null;
 
@@ -30,15 +31,9 @@ export class EndGameComponent implements OnInit {
 
   ngOnInit() {
     if (this.game) {
-      // Fetch game duration from the API
       this.gameService.getGameDuration(this.game.id).subscribe({
-        next: (duration) => {
-          this.gameDuration = duration;
-        },
-        error: (err) => {
-          console.error('Failed to fetch game duration:', err);
-          this.gameDuration = 0;  // Fallback to 0 if API fails
-        }
+        next: (duration) => this.gameDuration = duration,
+        error: (err) => console.error('Failed to fetch game duration:', err)
       });
     }
   }
@@ -58,23 +53,21 @@ export class EndGameComponent implements OnInit {
       next: (updatedGame) => {
         this.game = updatedGame;
         this.players = updatedGame.players;
-        // Update duration after ending the game
+        // Fetch updated duration after ending the game
         this.gameService.getGameDuration(this.game.id).subscribe({
           next: (duration) => {
             this.gameDuration = duration;
+            const rankedPlayers = [...this.players].sort((a, b) => (a.rank || 999) - (b.rank || 999));
+            this.winner = rankedPlayers[0];
+            this.showVictoryModal = true;
+            this.startConfetti();
           },
-          error: (err) => {
-            console.error('Failed to fetch updated game duration:', err);
-          }
+          error: (err) => console.error('Failed to fetch updated game duration:', err)
         });
-        const rankedPlayers = [...this.players].sort((a, b) => (a.rank || 999) - (b.rank || 999));
-        this.winner = rankedPlayers[0];
-        this.showVictoryModal = true;
-        this.startConfetti();
       },
       error: (err) => {
         console.error('Failed to end game:', err);
-        alert('Error ending game.');
+        alert('Error ending game: ' + (err.error || err.message));
       }
     });
   }

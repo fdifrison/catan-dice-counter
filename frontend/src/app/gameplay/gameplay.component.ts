@@ -120,7 +120,7 @@ export class GameplayComponent implements OnInit, OnDestroy {
       datasets.push({
         label: this.players[i].name,
         data: playerRolls,
-        backgroundColor: this.createGradient(playerColor),
+        backgroundColor: playerColor,
         borderColor: '#000000',
         borderWidth: 1
       });

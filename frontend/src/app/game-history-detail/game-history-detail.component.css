@@ -13,6 +13,9 @@
   width: 100%;
   margin-bottom: 15px;
   position: relative;
+  background: linear-gradient(135deg, hsla(0, 100%, 27%, 0.8) 20%, hsla(4, 81%, 49%, 0.8) 100%);
+  border-radius: 8px;
+  border: 2px solid #d4af37;
 }
 
 .ranking-container {
@@ -33,11 +36,12 @@
 
 .player-card {
   padding: 5px;
-  border-radius: 8px;
-  background: rgba(255, 245, 238, 0.7);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: linear-gradient(135deg, hsla(0, 100%, 27%, 0.8) 20%, hsla(4, 81%, 49%, 0.8) 100%);
+  border-radius: 8px;
+  border: 2px solid #d4af37;
 }
 
 .player-name {
@@ -45,9 +49,17 @@
   font-weight: 700;
   font-size: 18px;
   flex-grow: 1;
+  margin-right: 10px; /* Add spacing after name */
 }
 
-.player-rank,
+.player-rank {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #d4af37;
+  margin-right: 15px; /* Space between rank and points */
+}
+
 .player-points {
   font-family: 'Cinzel', serif;
   font-weight: 700;
@@ -58,7 +70,7 @@
 .chart-controls {
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Equal padding */
+  gap: 15px;
   margin-bottom: 15px;
 }
 
@@ -67,5 +79,5 @@
 }
 
 .return-home {
-  margin-bottom: 15px; /* Equal padding */
+  margin-bottom: 15px;
 }

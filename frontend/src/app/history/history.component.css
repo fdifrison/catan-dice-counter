@@ -18,7 +18,8 @@
 .game-card {
   padding: 10px;
   border-radius: 8px;
-  background: rgba(255, 245, 238, 0.7);
+  border: 2px solid #d4af37;
+  background: linear-gradient(135deg, hsla(0, 100%, 27%, 0.8) 20%, hsla(4, 81%, 49%, 0.8) 100%);
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -45,11 +45,11 @@ export class GameSetupComponent {
 
   getMutedColor(color: PlayerColor): string {
     const mutedColors: { [key in PlayerColor]: string } = {
-      red: 'rgba(139, 0, 0, 0.6)',
-      blue: 'rgba(0, 0, 139, 0.6)',
-      green: 'rgba(0, 100, 0, 0.6)',
-      white: 'rgba(245, 245, 245, 0.6)',
-      orange: 'rgba(255, 140, 0, 0.6)'
+      red: 'rgba(139, 0, 0, 0.8)',
+      blue: 'rgba(0, 0, 139, 0.8)',
+      green: 'rgba(0, 100, 0, 0.8)',
+      white: 'rgba(245, 245, 245, 0.8)',
+      orange: 'rgba(255, 140, 0, 0.8)'
     };
     return mutedColors[color];
   }

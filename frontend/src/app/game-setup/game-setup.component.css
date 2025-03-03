@@ -21,7 +21,7 @@
   color: #d4af37;
   font-weight: bolder;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-  padding: 12px 24px;
+  padding: 5px 24px;
   border: 2px solid #d4af37 !important;
   border-radius: 50px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5);
@@ -48,7 +48,7 @@
   color: #d4af37;
   font-weight: bolder;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-  padding: 12px 24px;
+  padding: 5px 24px;
   border: 2px solid #d4af37 !important;
   border-radius: 50px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(212, 175, 55, 0.5);
@@ -95,7 +95,7 @@
 
 .name-input {
   background: linear-gradient(135deg, #8B0000 20%, #e32716 100%);
-  color: #d4af37;
+  color: #000000;
   font-weight: bolder;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
   padding: 12px 24px;
@@ -117,13 +117,13 @@
 }
 
 .name-input::placeholder {
-  color: #d4af37;
+  color: #000000;
   opacity: 0.8;
 }
 
 .form-control, .form-select {
   font-family: 'Cinzel', serif;
-  color: #d4af37;
+  color: #000000;
   background: rgba(139, 0, 0, 0.2);
   border: 2px solid #d4af37;
   border-radius: 5px;
@@ -135,7 +135,7 @@
 
 .form-control::placeholder,
 .form-select::placeholder {
-  color: #d4af37;
+  color: #000000;
   opacity: 0.8;
 }
 

@@ -1,7 +1,7 @@
 spring:
   web:
     cors:
-      allowed-origins: "http://localhost:4200"
+      allowed-origins: ${ALLOWED_ORIGINS:http://localhost:4200}  # Default to local dev
       allowed-methods: "GET,POST,PUT,DELETE"
       allowed-headers: "*"
   datasource:
@@ -18,9 +18,9 @@ spring:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
       ddl-auto: none
-    show-sql: off
+    show-sql: true
     open-in-view: off
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+    change-log: classpath:db/changelog/init.yaml
 server:
   port: ${PORT:8080}

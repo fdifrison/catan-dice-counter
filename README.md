@@ -37,53 +37,36 @@ The **Catan Dice Counter** is a web application designed to enhance *Settlers of
 - **Database**: SQLite at `/data/database.db` (Railway) or `./data/database.db` (local, temporary).
 - **Routing**: Angular uses `app.routes.ts` (standalone); Spring Boot forwards `/` to `/browser/index.html`.
 
-## Key Decisions
-1. **Spring Boot + Angular Integration**:
-    - Angular build (`ng build --output-path=dist/dice-counter --base-href=/browser/`) outputs to `dist/dice-counter/browser/`.
-    - Maven’s `frontend-maven-plugin` builds Angular, `maven-resources-plugin` copies to `static/browser/`.
-    - `HomeController` forwards `["", "/", "/{path:[^\\.]*}"]` to `/browser/index.html`.
-    - **Why**: Single JAR deployment, leverages Spring’s static serving with SPA routing.
-2. **SQLite Configuration**:
-    - Uses `sqlite-jdbc:3.49.1.0` and `hibernate-community-dialects:7.0.0.Beta1`.
-    - `application.yml`: `jdbc:sqlite:./data/database.db` (local) vs. `/data/database.db` (Railway).
-    - **Why**: Lightweight DB; local workaround until profiles implemented.
-3. **Frontend Styling**:
-    - Bootstrap 5 for layout, custom CSS for Catan theme (parchment background, brown buttons).
-    - `MainMenuComponent` with logo and animated buttons.
-    - **Why**: Quick, polished UI with Catan flair.
+## Frontend Overview
 
-## Current State
-- **Backend**: Spring Boot serves Angular frontend at `http://localhost:8080/` and `/browser/index.html`. No entities/APIs yet.
-- **Frontend**: Angular 19 standalone setup:
-    - `MainMenuComponent`: Styled with title, Catan logo (hover effects), and buttons (“New Game”, “Game History”).
-    - Routing via `app.routes.ts` maps `/` to `MainMenuComponent`.
-- **Database**: SQLite configured but empty (tables pending).
-- **Build**: `mvn package` compiles backend and frontend into JAR.
-- **Deployment**: Ready for Railway with volume at `/data/` (not deployed yet).
+The frontend is a single-page application (SPA) using Angular 19 standalone components, styled with a custom theme (gold text, red gradients, Cinzel font). It includes the following components:
 
-### Latest Developments
-- **Angular Build Fix**: Updated `frontend/package.json` to `ng build --output-path=dist/dice-counter --base-href=/browser/`, ensuring `<base href="/browser/">` aligns with `static/browser/` script paths. No `runtime.js` (Angular 19/esbuild merges into `main.js`).
-- **Spring Boot Routing Fix**: `HomeController` adjusted to `@GetMapping(value = {"", "/", "/{path:[^\\.]*}"})`, resolving 404 at `/`. Now forwards to `/browser/index.html`, rendering `MainMenuComponent`.
-- **Verification**: `http://localhost:8080/` and `/browser/index.html` both display the styled main menu.
+### Components
+- **MainMenuComponent**: Entry point with options to start a new game or view history.
+- **GameSetupComponent**: Configure game name, player count (2-5), and player details (name, unique color).
+- **GameplayComponent**: Track dice rolls with a stacked bar chart, timer, and turn management.
+- **EndGameComponent**: Assign ranks (exclusive dropdown) and points, display winner with confetti.
+- **HistoryComponent**: List past games with names and dates, delete option with confirmation modal.
+- **GameHistoryDetailComponent**: Detailed view of past games with two charts:
+    - "Rolls Distribution": Stacked bar chart of roll frequency by player.
+    - "Roll Sequence": Horizontal bar chart showing dice numbers per turn.
 
-## Next Steps
-1. **Frontend**: Style `GameSetupComponent` for player input (names, colors) with effects.
-2. **Backend**: Define JPA entities (`Game`, `Player`, `Roll`) and REST APIs.
-3. **Enhancements**: Add Chart.js for histograms in gameplay.
-4. **Deployment**: Configure Railway with prod profile and volume.
+### Features
+- **Responsive Design**: Optimized for portrait (e.g., 414x666px), with minimal scroll.
+- **Local Storage**: Persists game data (`gameSetup`, `gameplayData`, `gameHistory`).
+- **Charts**: Uses Chart.js for roll distribution (bar) and sequence (horizontal bar) visualizations.
+- **Exclusivity**: Unique player colors in setup, exclusive ranks in end-game.
 
-## Setup Instructions
-### Prerequisites
-- Java 23, Node.js 20.11.0, npm 10.2.4, Angular CLI 19.x.
-- Ubuntu (or compatible OS).
+## Prerequisites
+- Node.js (v18+ recommended)
+- npm (v9+ recommended)
 
-### Local Development
-```bash
-# Create local SQLite folder
-mkdir data
-
-# Build and run
-cd dice-counter
-mvn clean package
-java -jar target/dice-counter-0.0.1-SNAPSHOT.jar
-```
+### Setup Instructions
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd frontend
+   npm install
+   ng serve --host 0.0.0.0 --port 4200
+   ```   
+* Access at http://<your-ip>:4200/.

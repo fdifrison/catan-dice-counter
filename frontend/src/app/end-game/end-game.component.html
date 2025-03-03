@@ -2,7 +2,8 @@
   <form [formGroup]="endGameForm" (ngSubmit)="confirmEndGame()">
     <div class="player-list" formArrayName="players">
       <div class="player-card" *ngFor="let player of players.controls; let i = index" [formGroupName]="i">
-        <span class="player-name" [ngStyle]="{'color': getPlayerColor(player.get('color')?.value)}">{{ player.get('name')?.value }}</span>
+        <span class="player-name"
+              [ngStyle]="{'color': getPlayerColor(player.get('color')?.value)}">{{ player.get('name')?.value }}</span>
         <select class="rank-select" formControlName="rank">
           <option *ngFor="let rank of getAvailableRanks(i)" [value]="rank">{{ rank }}</option>
         </select>
@@ -17,15 +18,16 @@
     </div>
     <div class="end-game-controls">
       <button class="btn-catan" type="submit">Confirm</button>
-      <button class="btn-catan" type="button" (click)="goToMainMenu()">Main Menu</button>
     </div>
   </form>
   <div class="modal-overlay" *ngIf="showVictoryModal">
     <div class="modal-content">
       <h3 class="modal-title">Victory!</h3>
       <div class="winner-announcement">
-        <span class="winner-name" [ngStyle]="{'color': getPlayerColor(winner.color)}">{{ winner.name }}</span>
-        <span class="winner-text">has won the game!</span>
+        <div class="winner-name" [ngStyle]="{'color': getPlayerColor(winner.color)}">
+          {{ winner.name }}
+        </div>
+        <div class="winner-text">has won the game!</div>
       </div>
       <div class="modal-controls">
         <button class="btn-catan" (click)="goToMainMenu()">Main Menu</button>
@@ -33,7 +35,3 @@
       </div>
     </div>
   </div>
-  <div class="duration-container">
-    <button class="btn-catan duration-btn">Total Game Duration: {{ formatDuration(gameDuration) }}</button>
-  </div>
-</div>

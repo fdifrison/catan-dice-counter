@@ -14,7 +14,7 @@ import { GameService } from '../services/game.service';
 })
 export class EndGameComponent implements OnInit {
   game: any = null;
-  endGameForm!: FormGroup;  // Use ! to indicate it'll be assigned in constructor
+  endGameForm!: FormGroup;
   gameDuration: number = 0;
   showVictoryModal: boolean = false;
   winner: any | null = null;
@@ -40,13 +40,8 @@ export class EndGameComponent implements OnInit {
 
   ngOnInit() {
     if (this.game) {
-      this.gameService.getGameDuration(this.game.id).subscribe({
-        next: (duration) => {
-          this.gameDuration = duration;
-          this.cdr.detectChanges();
-        },
-        error: (err) => console.error('Failed to fetch initial game duration:', err)
-      });
+      this.gameDuration = this.calculateDuration(this.game.startTimestamp, this.game.endTimestamp);
+      this.cdr.detectChanges();
     }
   }
 
@@ -87,24 +82,31 @@ export class EndGameComponent implements OnInit {
       next: (updatedGame) => {
         this.game = updatedGame;
         this.endGameForm.setControl('players', this.fb.array(updatedGame.players.map((p: any) => this.createPlayerFormGroup(p))));
-        this.gameService.getGameDuration(this.game.id).subscribe({
-          next: (duration) => {
-            this.gameDuration = duration;
-            console.log('Updated game duration:', this.gameDuration);
-            this.cdr.detectChanges();
-            const rankedPlayers = [...this.players.value].sort((a: any, b: any) => (a.rank || 999) - (b.rank || 999));
-            this.winner = rankedPlayers[0];
-            this.showVictoryModal = true;
-            this.startConfetti();
-          },
-          error: (err) => console.error('Failed to fetch updated game duration:', err)
-        });
+        this.gameDuration = this.calculateDuration(updatedGame.startTimestamp, updatedGame.endTimestamp);
+        console.log('Updated game duration:', this.gameDuration);
+        this.cdr.detectChanges();
+        const rankedPlayers = [...this.players.value].sort((a: any, b: any) => (a.rank || 999) - (b.rank || 999));
+        this.winner = rankedPlayers[0];
+        this.showVictoryModal = true;
+        this.startConfetti();
       },
       error: (err) => {
         console.error('Failed to end game:', err);
         alert('Error ending game: ' + (err.error || err.message));
       }
     });
+  }
+
+  calculateDuration(startTimestamp: string | undefined, endTimestamp: string | undefined): number {
+    if (!startTimestamp || !endTimestamp) {
+      console.log('Duration not calculated: startTimestamp=' + startTimestamp + ', endTimestamp=' + endTimestamp);
+      return 0;
+    }
+    const start = new Date(startTimestamp).getTime();
+    const end = new Date(endTimestamp).getTime();
+    const duration = (end - start) / 1000;  // Convert to seconds
+    console.log('Calculated duration:', duration);
+    return duration;
   }
 
   startConfetti() {

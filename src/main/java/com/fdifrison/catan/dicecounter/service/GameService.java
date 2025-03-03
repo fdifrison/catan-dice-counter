@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,27 +86,36 @@ public class GameService {
                         .orElse("Unknown"))
                 .orElse("No turns recorded");
     }
-
     @Transactional
     public GameDTO createGame(GameCreateDTO gameCreateDTO) {
+        System.out.println("Starting createGame at " + Instant.now());
+        var gameId = UUID.randomUUID().hashCode();
         Game game = gameMapper.toEntity(gameCreateDTO);
+        game.setId(gameId);  // Assign ID
         List<Player> players = gameCreateDTO.players().stream()
                 .map(playerMapper::toEntity)
-                .peek(player -> player.setGame(game))
+                .peek(player -> {
+                    player.setGame(game);
+                    player.setId(gameId);  // Assign ID
+                })
                 .collect(Collectors.toList());
         game.setPlayers(players);
         Game savedGame = gameRepository.save(game);
+        System.out.println("Finished createGame at " + Instant.now());
         return gameMapper.toDto(savedGame);
     }
 
     @Transactional
     public TurnDTO recordTurn(Integer gameId, TurnCreateDTO turnCreateDTO) {
+        System.out.println("Starting recordTurn for gameId: " + gameId + " at " + Instant.now());
+        var turnId = UUID.randomUUID().hashCode();
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         Player player = playerRepository.findById(turnCreateDTO.playerId())
                 .orElseThrow(() -> new IllegalArgumentException("Player not found: " + turnCreateDTO.playerId()));
 
         Turn turn = turnMapper.toEntity(turnCreateDTO);
+        turn.setId(turnId);  // Assign ID
         turn.setGame(game);
         turn.setPlayer(player);
 
@@ -113,12 +123,14 @@ public class GameService {
 
         if (turnCreateDTO.rollNumber() != null) {
             Roll roll = new Roll();
+            roll.setId(turnId);  // Assign ID
             roll.setGame(game);
             roll.setNumber(turnCreateDTO.rollNumber());
             roll.setPlayerIndex(player.getOrder());
             rollRepository.save(roll);
         }
 
+        System.out.println("Finished recordTurn for gameId: " + gameId + " at " + Instant.now());
         return turnMapper.toDto(savedTurn);
     }
 

@@ -18,9 +18,11 @@ public class DbConfig {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(properties.url());
         dataSource.setDriverClassName(properties.driverClassName());
-        dataSource.setMaximumPoolSize(2);  // Match application.yml
-        dataSource.setMinimumIdle(1);
-        dataSource.setConnectionTimeout(20000);
+        dataSource.setMaximumPoolSize(properties.hikari().maximumPoolSize());  // Match application.yml
+        dataSource.setMinimumIdle(properties.hikari().minimumIdle());
+        dataSource.setConnectionTimeout(properties.hikari().connectionTimeout());
+        dataSource.setIdleTimeout(properties.hikari().idleTimeout());
+        dataSource.setMaxLifetime(properties.hikari().maxLifetime());
         dataSource.addDataSourceProperty("busy_timeout", "10000");  // SQLite-specific
         return dataSource;
     }

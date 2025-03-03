@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 public class Roll {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)

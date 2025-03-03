@@ -13,7 +13,6 @@ import java.time.Instant;
 @Setter
 public class Turn {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)

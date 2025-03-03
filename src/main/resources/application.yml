@@ -8,14 +8,16 @@ spring:
     url: jdbc:sqlite:/data/database.db
     driver-class-name: org.sqlite.JDBC
     hikari:
-      connection-timeout: 20000      # 20 seconds
-      maximum-pool-size: 2           # Limit to 2 connections to reduce contention
-      minimum-idle: 1               # Keep 1 idle connection
-      busy-timeout: 10000           # 10 seconds timeout for busy database
+      connection-timeout: 30000
+      maximum-pool-size: 3
+      minimum-idle: 1
+      idle-timeout: 30000
+      max-lifetime: 60000
+      busy-timeout: 15000
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
-      ddl-auto: none               # Let Liquibase manage schema
+      ddl-auto: none
     show-sql: true
     open-in-view: off
   liquibase:

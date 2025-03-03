@@ -14,8 +14,7 @@ import java.util.List;
 @Setter
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Integer id;  // Remove @GeneratedValue
 
     @Column(nullable = false)
     private String name;

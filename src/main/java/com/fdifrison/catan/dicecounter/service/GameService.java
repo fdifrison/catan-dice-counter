@@ -143,13 +143,14 @@ public class GameService {
 
         Turn savedTurn = turnRepository.save(turn);
 
-        if (turnCreateDTO.rollNumber() != null) {  // Already validated as @NotNull
+        if (turnCreateDTO.rollNumber() != null) {
             Roll roll = new Roll();
             roll.setId(UUID.randomUUID().hashCode());
             roll.setGame(game);
             roll.setTurn(savedTurn);
             roll.setNumber(turnCreateDTO.rollNumber());
-            roll.setPlayerIndex(player.getOrder());
+            roll.setPlayerIndex(player.getOrder() - 1);  // 0-based index
+            System.out.println("Saved roll: id=" + roll.getId() + ", gameId=" + gameId + ", turnId=" + turnId + ", number=" + roll.getNumber() + ", playerIndex=" + roll.getPlayerIndex());
             rollRepository.save(roll);
         }
 

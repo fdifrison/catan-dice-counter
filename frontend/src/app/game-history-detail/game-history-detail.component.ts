@@ -45,8 +45,9 @@ export class GameHistoryDetailComponent implements OnInit {
 
   initChart() {
     if (!this.game) return;
-    console.log('Game turns:', this.game.turns);
-    console.log('Game rolls:', this.game.rolls);
+    console.log('Players:', this.game.players);
+    console.log('Rolls:', this.game.rolls);
+    console.log('Turns:', this.game.turns);
     const ctx = document.getElementById('historyChart') as HTMLCanvasElement;
     if (this.chart) this.chart.destroy();
 
@@ -78,7 +79,7 @@ export class GameHistoryDetailComponent implements OnInit {
             label: player.name,
             data: this.game.turns
               .map((turn: any) => {
-                const roll = this.game.rolls.find((r: any) => r.turnId === turn.id && r.playerIndex === i);
+                const roll = this.game.rolls.find((r: any) => r.turnId === turn.id && r.playerIndex === i);  // Match array index
                 return roll ? { x: roll.number, y: turn.turnNumber, r: 6 } : null;
               })
               .filter((d: any) => d !== null),
@@ -104,7 +105,7 @@ export class GameHistoryDetailComponent implements OnInit {
       const playerTimes = this.game.players.map((player: any) => {
         const playerTurns = this.game.turns.filter((t: any) => t.playerId === player.id);
         return playerTurns.reduce((sum: number, turn: any) => {
-          return sum + (new Date(turn.endTimestamp).getTime() - new Date(turn.startTimestamp).getTime()) / 60000;  // Convert to minutes
+          return sum + (new Date(turn.endTimestamp).getTime() - new Date(turn.startTimestamp).getTime()) / 60000;
         }, 0);
       });
 
@@ -141,8 +142,8 @@ export class GameHistoryDetailComponent implements OnInit {
     this.game.rolls.forEach((roll: any) => {
       rollsByNumber[roll.number - 2].push(roll.playerIndex);
     });
-    console.log('Rolls by number:', rollsByNumber);  // Debug
-    return this.game.players.map((player: any, i: number) => {
+    console.log('Rolls by number:', rollsByNumber);
+    return this.game.players.map((player: any, i: number) => {  // Use array index i
       const playerColor = this.getPlayerColor(player.color);
       const playerRolls = rollsByNumber.map(rolls => rolls.filter(idx => idx === i).length);
       return {
@@ -153,8 +154,9 @@ export class GameHistoryDetailComponent implements OnInit {
         borderWidth: 1,
         categoryPercentage: 0.8
       };
-    });  // Removed filtering to include all players
+    });
   }
+
 
   getPlayerColor(color: string): string {
     const colors: { [key: string]: string } = {

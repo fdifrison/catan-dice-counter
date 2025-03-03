@@ -129,7 +129,7 @@ public class GameService {
                 .orElseThrow(() -> new IllegalArgumentException("Player not found: " + turnCreateDTO.playerId()));
 
         Turn turn = turnMapper.toEntity(turnCreateDTO);
-        int turnId = UUID.randomUUID().hashCode();  // Generate unique ID
+        int turnId = UUID.randomUUID().hashCode();
         turn.setId(turnId);
         turn.setGame(game);
         turn.setPlayer(player);
@@ -138,8 +138,9 @@ public class GameService {
 
         if (turnCreateDTO.rollNumber() != null) {
             Roll roll = new Roll();
-            roll.setId(UUID.randomUUID().hashCode());  // Generate unique ID
+            roll.setId(UUID.randomUUID().hashCode());
             roll.setGame(game);
+            roll.setTurn(savedTurn);  // Link to Turn
             roll.setNumber(turnCreateDTO.rollNumber());
             roll.setPlayerIndex(player.getOrder());
             rollRepository.save(roll);

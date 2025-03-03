@@ -25,7 +25,7 @@ export class GameHistoryDetailComponent implements OnInit {
     this.gameService.getGameById(gameId).subscribe({
       next: (game) => {
         this.game = game;
-        this.initChart();  // Initialize chart after data is loaded
+        this.initChart();
       },
       error: (err) => {
         console.error('Failed to load game:', err);
@@ -40,6 +40,7 @@ export class GameHistoryDetailComponent implements OnInit {
     if (!this.game) return;
     const ctx = document.getElementById('historyChart') as HTMLCanvasElement;
     if (this.chart) this.chart.destroy();
+
     if (this.chartType === 'bar') {
       this.chart = new Chart(ctx, {
         type: 'bar',
@@ -55,23 +56,53 @@ export class GameHistoryDetailComponent implements OnInit {
             title: { display: false }
           },
           scales: {
+            x: { stacked: true, ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' } },
+            y: { stacked: true, beginAtZero: true, min: 0, max: Math.max(4, ...this.game.rolls.map((r: any) => this.game.rolls.filter((r2: any) => r2.number === r.number).length)), ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37', stepSize: 1 }, grid: { color: '#d4af37', lineWidth: 2 } }
+          }
+        }
+      });
+    } else {  // roll-sequence
+      this.chart = new Chart(ctx, {
+        type: 'bubble',
+        data: {
+          datasets: this.game.players.map((player: any, i: number) => ({
+            label: player.name,
+            data: this.game.turns
+              .map((turn: any) => {
+                const roll = this.game.rolls.find((r: any) => r.turnId === turn.id);
+                return roll && roll.playerIndex === i ? { x: roll.number, y: turn.turnNumber, r: 6 } : null;
+              })
+              .filter((d: any) => d !== null),
+            backgroundColor: this.getPlayerColor(player.color),
+            borderColor: '#000000',
+            borderWidth: 1
+          })).filter((ds: any) => ds.data.length > 0)
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, position: 'bottom', labels: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#000000' } },
+            title: { display: false }
+          },
+          scales: {
             x: {
-              stacked: true,
-              ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' }
+              title: { display: true, text: 'Dice Outcome', font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' },
+              ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37', stepSize: 1 },
+              min: 2,
+              max: 12,
+              grid: { color: '#d4af37', lineWidth: 2 }
             },
             y: {
-              stacked: true,
-              beginAtZero: true,
-              min: 0,
-              max: Math.max(4, ...this.game.rolls.map((r: any) => this.game.rolls.filter((r2: any) => r2.number === r.number).length)),
+              title: { display: true, text: 'Turn Number', font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' },
               ticks: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37', stepSize: 1 },
-              grid: { color: '#d4af37', lineWidth: 2 }
+              min: 1,
+              max: Math.max(...this.game.turns.map((t: any) => t.turnNumber)) + 1,
+              grid: { color: '#d4af37', lineWidth: 0.5 }
             }
           }
         }
       });
-    } else {
-      // Roll-sequence chart logic can be added later if needed
     }
   }
 

@@ -16,6 +16,10 @@ public class Roll {
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "turn_id")  // New field
+    private Turn turn;
+
     @Column(nullable = false)
     private int number;
 

@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 2025-03-03-001
+      id: 2025-03-03-init
       author: grok
       changes:
         - createTable:
@@ -75,6 +75,12 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_roll_game
                     references: game(id)
+              - column:
+                  name: turn_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: fk_roll_turn
+                    references: turn(id)
               - column:
                   name: number
                   type: int

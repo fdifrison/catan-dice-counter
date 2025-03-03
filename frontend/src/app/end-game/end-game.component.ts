@@ -3,19 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import confetti from 'canvas-confetti';
-
-interface Player {
-  name: string;
-  color: string;
-  order: number;
-  rank?: number;
-  points?: number;
-}
-
-interface Roll {
-  number: number;
-  playerIndex: number;
-}
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-end-game',
@@ -25,42 +13,70 @@ interface Roll {
   styleUrls: ['./end-game.component.css']
 })
 export class EndGameComponent implements OnInit {
-  players: Player[] = [];
-  gameDuration: number = 0;
+  game: any = null;
+  players: any[] = [];
+  gameDuration: number = 0;  // Added property
   showVictoryModal: boolean = false;
-  winner: Player | null = null;
+  winner: any | null = null;
 
-  constructor(private router: Router) {
-    const gameplayData = JSON.parse(localStorage.getItem('gameplayData') || '{}');
-    this.players = gameplayData.players || [
-      { name: 'Player 1', color: 'red', order: 1 },
-      { name: 'Player 2', color: 'blue', order: 2 },
-      { name: 'Player 3', color: 'orange', order: 3 }
-    ];
-    this.gameDuration = gameplayData.duration || 0;
-    this.players.forEach(player => {
-      player.rank = undefined; // Start with no ranks assigned
-      player.points = player.points || 0;
-    });
+  constructor(private router: Router, private gameService: GameService) {
+    this.game = history.state.game;
+    if (this.game) {
+      this.players = this.game.players.map((p: any) => ({ ...p, rank: undefined, points: 0 }));
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.game) {
+      // Fetch game duration from the API
+      this.gameService.getGameDuration(this.game.id).subscribe({
+        next: (duration) => {
+          this.gameDuration = duration;
+        },
+        error: (err) => {
+          console.error('Failed to fetch game duration:', err);
+          this.gameDuration = 0;  // Fallback to 0 if API fails
+        }
+      });
+    }
+  }
 
   getAvailableRanks(playerIndex: number): number[] {
     const totalPlayers = this.players.length;
     const usedRanks = this.players
       .filter((_, i) => i !== playerIndex)
       .map(p => p.rank)
-      .filter(r => r !== undefined) as number[];
+      .filter(r => r !== undefined);
     return Array.from({ length: totalPlayers }, (_, i) => i + 1)
       .filter(rank => !usedRanks.includes(rank));
   }
 
   confirmEndGame() {
-    const rankedPlayers = [...this.players].sort((a, b) => (a.rank || 999) - (b.rank || 999));
-    this.winner = rankedPlayers[0];
-    this.showVictoryModal = true;
-    this.startConfetti();
+    this.gameService.endGame(this.game.id, this.players).subscribe({
+      next: (updatedGame) => {
+        this.game = updatedGame;
+        this.players = updatedGame.players;
+        // Update duration after ending the game
+        this.gameService.getGameDuration(this.game.id).subscribe({
+          next: (duration) => {
+            this.gameDuration = duration;
+          },
+          error: (err) => {
+            console.error('Failed to fetch updated game duration:', err);
+          }
+        });
+        const rankedPlayers = [...this.players].sort((a, b) => (a.rank || 999) - (b.rank || 999));
+        this.winner = rankedPlayers[0];
+        this.showVictoryModal = true;
+        this.startConfetti();
+      },
+      error: (err) => {
+        console.error('Failed to end game:', err);
+        alert('Error ending game.');
+      }
+    });
   }
 
   startConfetti() {
@@ -94,18 +110,6 @@ export class EndGameComponent implements OnInit {
   }
 
   goToHistory() {
-    const gameData = {
-      id: Date.now().toString(),
-      name: JSON.parse(localStorage.getItem('gameplayData') || '{}').gameName || 'Unnamed Game',
-      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      players: this.players,
-      duration: this.gameDuration,
-      rolls: JSON.parse(localStorage.getItem('gameplayData') || '{}').rolls || []
-    };
-    const history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
-    history.push(gameData);
-    localStorage.setItem('gameHistory', JSON.stringify(history));
-    localStorage.setItem('lastGame', JSON.stringify(gameData));
     this.router.navigate(['/history']);
   }
 

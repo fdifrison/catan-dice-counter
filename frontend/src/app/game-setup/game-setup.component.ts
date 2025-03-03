@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { GameService } from '../services/game.service';
 
 type PlayerColor = 'red' | 'blue' | 'orange' | 'white' | 'green';
 
@@ -15,21 +16,22 @@ type PlayerColor = 'red' | 'blue' | 'orange' | 'white' | 'green';
 export class GameSetupComponent {
   gameName: string = '';
   playerCount: number = 3;
-  players: { name: string; color: PlayerColor }[] = [
-    { name: '', color: 'red' },
-    { name: '', color: 'blue' },
-    { name: '', color: 'green' }
+  // Updated type to include order
+  players: { name: string; color: PlayerColor; order: number }[] = [
+    { name: '', color: 'red', order: 1 },
+    { name: '', color: 'blue', order: 2 },
+    { name: '', color: 'green', order: 3 }
   ];
   availableColors: PlayerColor[] = ['red', 'blue', 'green', 'white', 'orange'];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private gameService: GameService) {}
 
   updatePlayers() {
     const currentCount = this.players.length;
     if (this.playerCount > currentCount) {
       for (let i = currentCount + 1; i <= this.playerCount; i++) {
         const nextColor = this.getNextAvailableColor();
-        this.players.push({ name: '', color: nextColor });
+        this.players.push({ name: '', color: nextColor, order: i });
       }
     } else if (this.playerCount < currentCount) {
       this.players = this.players.slice(0, this.playerCount);
@@ -40,7 +42,7 @@ export class GameSetupComponent {
   getNextAvailableColor(): PlayerColor {
     const usedColors = this.players.map(p => p.color);
     const available = this.availableColors.find(color => !usedColors.includes(color));
-    return available || 'orange'; // Fallback if all colors used
+    return available || 'orange';
   }
 
   getMutedColor(color: PlayerColor): string {
@@ -79,6 +81,16 @@ export class GameSetupComponent {
   }
 
   startGame() {
-    this.router.navigate(['/gameplay']);
+    // Call the API to create the game
+    this.gameService.createGame(this.gameName, this.players).subscribe({
+      next: (game) => {
+        // Pass the game data to the gameplay component
+        this.router.navigate(['/gameplay'], { state: { game } });
+      },
+      error: (err) => {
+        console.error('Failed to create game:', err);
+        alert('Error creating game. Please try again.');
+      }
+    });
   }
 }

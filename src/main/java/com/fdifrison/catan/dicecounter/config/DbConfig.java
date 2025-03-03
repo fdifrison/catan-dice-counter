@@ -1,12 +1,8 @@
 package com.fdifrison.catan.dicecounter.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-
-import javax.sql.DataSource;
 
 @Configuration
 public class DbConfig {
@@ -18,12 +14,14 @@ public class DbConfig {
     }
 
     @Bean
-    public DataSource dataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(properties.url());
+    public HikariDataSource dataSource() {
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(properties.url());
         dataSource.setDriverClassName(properties.driverClassName());
-        dataSource.setUsername(properties.username());
-        dataSource.setPassword(properties.password());
+        dataSource.setMaximumPoolSize(2);  // Match application.yml
+        dataSource.setMinimumIdle(1);
+        dataSource.setConnectionTimeout(20000);
+        dataSource.addDataSourceProperty("busy_timeout", "10000");  // SQLite-specific
         return dataSource;
     }
 }

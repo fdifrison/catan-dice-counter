@@ -1,13 +1,24 @@
 spring:
+  web:
+    cors:
+      allowed-origins: "http://localhost:4200"
+      allowed-methods: "GET,POST,PUT,DELETE"
+      allowed-headers: "*"
   datasource:
     url: jdbc:sqlite:/data/database.db
     driver-class-name: org.sqlite.JDBC
-    username: admin
-    password: admin
+    hikari:
+      connection-timeout: 20000      # 20 seconds
+      maximum-pool-size: 2           # Limit to 2 connections to reduce contention
+      minimum-idle: 1               # Keep 1 idle connection
+      busy-timeout: 10000           # 10 seconds timeout for busy database
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
-      ddl-auto: update  # Creates/updates tables automatically
-    show-sql: true      # Logs SQL for debugging
+      ddl-auto: none               # Let Liquibase manage schema
+    show-sql: true
     open-in-view: off
-
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+server:
+  port: ${PORT:8080}

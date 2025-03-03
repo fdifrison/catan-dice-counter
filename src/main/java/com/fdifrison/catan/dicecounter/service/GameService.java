@@ -99,7 +99,7 @@ public class GameService {
     }
 
     @Transactional
-    public TurnDTO recordTurn(Integer gameId, TurnCreateDTO turnCreateDTO) {  // Changed from Long
+    public TurnDTO recordTurn(Integer gameId, TurnCreateDTO turnCreateDTO) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         Player player = playerRepository.findById(turnCreateDTO.playerId())
@@ -109,6 +109,8 @@ public class GameService {
         turn.setGame(game);
         turn.setPlayer(player);
 
+        Turn savedTurn = turnRepository.save(turn);
+
         if (turnCreateDTO.rollNumber() != null) {
             Roll roll = new Roll();
             roll.setGame(game);
@@ -117,7 +119,6 @@ public class GameService {
             rollRepository.save(roll);
         }
 
-        Turn savedTurn = turnRepository.save(turn);
         return turnMapper.toDto(savedTurn);
     }
 

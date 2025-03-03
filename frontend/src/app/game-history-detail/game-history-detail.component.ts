@@ -75,11 +75,11 @@ export class GameHistoryDetailComponent implements OnInit {
       this.chart = new Chart(ctx, {
         type: 'bubble',
         data: {
-          datasets: this.game.players.map((player: any, i: number) => ({
+          datasets: this.game.players.map((player: any) => ({
             label: player.name,
             data: this.game.turns
               .map((turn: any) => {
-                const roll = this.game.rolls.find((r: any) => r.turnId === turn.id && r.playerIndex === i);  // Match array index
+                const roll = this.game.rolls.find((r: any) => r.turnId === turn.id && r.playerIndex === (player.order - 1));
                 return roll ? { x: roll.number, y: turn.turnNumber, r: 6 } : null;
               })
               .filter((d: any) => d !== null),
@@ -143,9 +143,9 @@ export class GameHistoryDetailComponent implements OnInit {
       rollsByNumber[roll.number - 2].push(roll.playerIndex);
     });
     console.log('Rolls by number:', rollsByNumber);
-    return this.game.players.map((player: any, i: number) => {  // Use array index i
+    return this.game.players.map((player: any) => {
       const playerColor = this.getPlayerColor(player.color);
-      const playerRolls = rollsByNumber.map(rolls => rolls.filter(idx => idx === i).length);
+      const playerRolls = rollsByNumber.map(rolls => rolls.filter(idx => idx === (player.order - 1)).length);
       return {
         label: player.name,
         data: playerRolls,
@@ -156,7 +156,6 @@ export class GameHistoryDetailComponent implements OnInit {
       };
     });
   }
-
 
   getPlayerColor(color: string): string {
     const colors: { [key: string]: string } = {

@@ -52,12 +52,12 @@ export class EndGameComponent implements OnInit {
     this.gameService.endGame(this.game.id, this.players).subscribe({
       next: (updatedGame) => {
         this.game = updatedGame;
-        this.players = updatedGame.players;
-        // Fetch updated duration after ending the game
+        this.players = updatedGame.players.sort((a: any, b: any) => a.order - b.order);  // Ensure order
         this.gameService.getGameDuration(this.game.id).subscribe({
           next: (duration) => {
             this.gameDuration = duration;
-            const rankedPlayers = [...this.players].sort((a, b) => (a.rank || 999) - (b.rank || 999));
+            console.log('Updated game duration:', this.gameDuration);  // Debug
+            const rankedPlayers = [...this.players].sort((a: any, b: any) => (a.rank || 999) - (b.rank || 999));
             this.winner = rankedPlayers[0];
             this.showVictoryModal = true;
             this.startConfetti();

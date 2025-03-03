@@ -119,6 +119,7 @@ public class GameService {
                 .peek(player -> {
                     player.setGame(game);
                     player.setId(UUID.randomUUID().hashCode());
+                    System.out.println("Created player: id=" + player.getId() + ", name=" + player.getName() + ", order=" + player.getOrder());
                 })
                 .collect(Collectors.toList());
         game.setPlayers(players);

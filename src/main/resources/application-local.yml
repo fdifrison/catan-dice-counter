@@ -3,4 +3,4 @@ spring:
     url: jdbc:sqlite:./data/database.db
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update

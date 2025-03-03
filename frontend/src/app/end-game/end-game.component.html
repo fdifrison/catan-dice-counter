@@ -2,11 +2,14 @@
   <!-- Player Ranking and Points -->
   <div class="ranking-container">
     <div class="player-list">
-      <div class="player-card" *ngFor="let player of players">
+      <div class="player-card" *ngFor="let player of players; let i = index">
         <span class="player-name" [ngStyle]="{'color': getPlayerColor(player.color)}">
           {{ player.name }}
         </span>
-        <input type="number" class="form-control" placeholder="Rank" min="1" [max]="players.length" [(ngModel)]="player.rank">
+        <select class="form-control rank-select" [(ngModel)]="player.rank">
+          <option [value]="undefined" disabled selected>Rank</option>
+          <option *ngFor="let rank of getAvailableRanks(i)" [value]="rank">{{ rank }}</option>
+        </select>
         <input type="number" class="form-control" placeholder="Points" min="0" [(ngModel)]="player.points">
       </div>
     </div>

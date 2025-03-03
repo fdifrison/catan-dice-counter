@@ -35,19 +35,25 @@ export class EndGameComponent implements OnInit {
     this.players = gameplayData.players || [
       { name: 'Player 1', color: 'red', order: 1 },
       { name: 'Player 2', color: 'blue', order: 2 },
-      { name: 'Player 3', color: 'orange', order: 3 },
-      { name: 'Player 4', color: 'green', order: 4 }
+      { name: 'Player 3', color: 'orange', order: 3 }
     ];
     this.gameDuration = gameplayData.duration || 0;
+    this.players.forEach(player => {
+      player.rank = undefined; // Start with no ranks assigned
+      player.points = player.points || 0;
+    });
   }
 
   ngOnInit() {}
 
-  formatDuration(seconds: number): string {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hours}h ${minutes}m ${secs}s`;
+  getAvailableRanks(playerIndex: number): number[] {
+    const totalPlayers = this.players.length;
+    const usedRanks = this.players
+      .filter((_, i) => i !== playerIndex)
+      .map(p => p.rank)
+      .filter(r => r !== undefined) as number[];
+    return Array.from({ length: totalPlayers }, (_, i) => i + 1)
+      .filter(rank => !usedRanks.includes(rank));
   }
 
   confirmEndGame() {
@@ -89,7 +95,7 @@ export class EndGameComponent implements OnInit {
 
   goToHistory() {
     const gameData = {
-      id: Date.now().toString(), // Unique ID based on timestamp
+      id: Date.now().toString(),
       name: JSON.parse(localStorage.getItem('gameplayData') || '{}').gameName || 'Unnamed Game',
       date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
       players: this.players,
@@ -101,6 +107,13 @@ export class EndGameComponent implements OnInit {
     localStorage.setItem('gameHistory', JSON.stringify(history));
     localStorage.setItem('lastGame', JSON.stringify(gameData));
     this.router.navigate(['/history']);
+  }
+
+  formatDuration(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours}h ${minutes}m ${secs}s`;
   }
 
   getPlayerColor(color: string): string {

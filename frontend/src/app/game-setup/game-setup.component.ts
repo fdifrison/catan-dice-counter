@@ -67,7 +67,16 @@ export class GameSetupComponent implements OnInit {
   }
 
   updatePlayerSelection(index: number) {
-    // No additional logic needed; selection handled by ngModel
+    const selectedPlayerId = this.players[index].globalPlayerId;
+    const existingIndex = this.players.findIndex((p, i) => i !== index && p.globalPlayerId === selectedPlayerId);
+    if (existingIndex !== -1) {
+      // Swap players if the selected player is already in another position
+      const tempPlayer = { ...this.players[index] };
+      this.players[index] = { ...this.players[existingIndex], order: index + 1 };
+      this.players[existingIndex] = { ...tempPlayer, order: existingIndex + 1 };
+    }
+    // Ensure order reflects array position
+    this.players.forEach((p, i) => p.order = i + 1);
   }
 
   startGame() {
@@ -81,7 +90,6 @@ export class GameSetupComponent implements OnInit {
       this.errorMessage = 'Please select a player and color for each slot.';
       return;
     }
-    // Check for duplicate colors
     const colors = this.players.map(p => p.color);
     const uniqueColors = new Set(colors);
     if (uniqueColors.size !== colors.length) {

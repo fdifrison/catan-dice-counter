@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-railway-app.railway.app/api/games'  // Update after deployment
+  apiUrl: 'https://catan-dice-counter-production.up.railway.app/api/games'  // Update after deployment
 };

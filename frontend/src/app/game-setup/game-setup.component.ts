@@ -38,7 +38,7 @@ export class GameSetupComponent implements OnInit {
     this.players = [];
     const availableIds = this.availablePlayers.map(p => p.id);
     for (let i = 1; i <= this.playerCount && i <= availableIds.length; i++) {
-      this.players.push({ globalPlayerId: availableIds[i - 1], order: i, color: 'red' }); // Default color
+      this.players.push({ globalPlayerId: availableIds[i - 1], order: i, color: 'red' });
     }
   }
 
@@ -73,12 +73,20 @@ export class GameSetupComponent implements OnInit {
   startGame() {
     if (!this.gameName.trim()) {
       this.showErrorModal = true;
-      this.errorMessage = 'Game name cannot be blank.';
+      this.errorMessage = 'You need to set the game name!';
       return;
     }
     if (this.players.some(p => p.globalPlayerId === null || !p.color)) {
       this.showErrorModal = true;
       this.errorMessage = 'Please select a player and color for each slot.';
+      return;
+    }
+    // Check for duplicate colors
+    const colors = this.players.map(p => p.color);
+    const uniqueColors = new Set(colors);
+    if (uniqueColors.size !== colors.length) {
+      this.showErrorModal = true;
+      this.errorMessage = 'Each player must have a unique color!';
       return;
     }
     const gameData = {

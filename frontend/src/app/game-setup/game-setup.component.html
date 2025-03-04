@@ -14,7 +14,7 @@
       <div class="player-selection">
         <select class="form-select mb-1" [(ngModel)]="player.globalPlayerId" (change)="updatePlayerSelection(i)">
           <option *ngFor="let gp of availablePlayers" [value]="gp.id" [disabled]="isPlayerSelected(gp.id, i)">
-            {{ gp.name }} ({{ gp.email }})
+            {{ gp.name }} <!-- Changed: Show only name -->
           </option>
         </select>
         <select class="form-select mb-1" [(ngModel)]="player.color">
@@ -34,7 +34,7 @@
 
   <div class="modal" *ngIf="showErrorModal">
     <div class="modal-content">
-      <p>{{ errorMessage || 'Not enough players available. Please create more players in the Main Menu.' }}</p>
+      <p>{{ errorMessage }}</p>
       <button class="btn-catan" (click)="closeErrorModal()">OK</button>
     </div>
   </div>

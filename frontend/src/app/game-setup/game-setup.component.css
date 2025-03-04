@@ -149,3 +149,25 @@
   width: 180px;
   padding: 6px;
 }
+
+/* Existing styles remain unchanged, adding new ones below */
+.modal-content {
+  background: rgba(255, 245, 238, 0.9);
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  font-weight: 700;
+  font-size: 20px;
+  width: 300px; /* Added for consistency */
+}
+
+.modal-content p {
+  margin-bottom: 15px; /* Ensure spacing before button */
+}
+
+.modal-content button {
+  display: block; /* Center the button */
+  margin: 0 auto; /* Horizontally center */
+}

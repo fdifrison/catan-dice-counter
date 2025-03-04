@@ -36,12 +36,18 @@ export class PlayerStatisticsComponent implements OnInit {
   loadPlayerStats() {
     if (!this.selectedPlayerId) return;
 
+    console.log('Selected Player ID:', this.selectedPlayerId); // Debug selected ID
     this.gameService.getAllGames().subscribe({
       next: (games) => {
         console.log('All games:', games);
-        const playerGames = games.filter(game =>
-          game.players.some((p: any) => p.globalPlayerId === this.selectedPlayerId)
-        );
+        const playerGames = games.filter((game: any) => {
+          const match = game.players.some((p: any) => {
+            const matchCondition = p.globalPlayerId === this.selectedPlayerId;
+            console.log(`Checking player: globalPlayerId=${p.globalPlayerId}, selectedPlayerId=${this.selectedPlayerId}, match=${matchCondition}`);
+            return matchCondition;
+          });
+          return match;
+        });
         console.log('Player Games:', playerGames);
 
         if (playerGames.length === 0) {

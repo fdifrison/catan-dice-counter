@@ -9,36 +9,34 @@
   <div class="stats-circles" *ngIf="selectedPlayerId">
     <div class="stat-circle">
       <svg width="100" height="100">
-        <circle cx="50" cy="50" r="35" fill="none" stroke="#d4af37" stroke-width="2" />
-        <path id="luckyNumberPath" d="M50,15 A35,35 0 1,1 50,85 A35,35 0 1,1 50,15" fill="none" />
-        <text font-family="'Cinzel', serif" font-size="12" font-weight="700" fill="#d4af37" text-anchor="middle">
-          <textPath href="#luckyNumberPath" startOffset="25%">Lucky Number</textPath>
+        <path id="luckyNumberPath" d="M 10 50 A 40 40 0 0 1 90 50" fill="none" />
+        <text font-family="'Cinzel', serif" font-size="14" font-weight="700" fill="#d4af37" text-anchor="middle">
+          <textPath href="#luckyNumberPath" startOffset="50%">Lucky Number</textPath>
         </text>
       </svg>
       <span class="circle-value">{{ luckyNumber || '-' }}</span>
     </div>
     <div class="stat-circle">
       <svg width="100" height="100">
-        <circle cx="50" cy="50" r="35" fill="none" stroke="#d4af37" stroke-width="2" />
-        <path id="totalPointsPath" d="M50,15 A35,35 0 1,1 50,85 A35,35 0 1,1 50,15" fill="none" />
-        <text font-family="'Cinzel', serif" font-size="12" font-weight="700" fill="#d4af37" text-anchor="middle">
-          <textPath href="#totalPointsPath" startOffset="25%">Total Points</textPath>
+        <path id="totalPointsPath" d="M 10 50 A 40 40 0 0 1 90 50" fill="none" />
+        <text font-family="'Cinzel', serif" font-size="14" font-weight="700" fill="#d4af37" text-anchor="middle">
+          <textPath href="#totalPointsPath" startOffset="50%">Total Points</textPath>
         </text>
       </svg>
       <span class="circle-value">{{ totalPoints || 0 }}</span>
     </div>
     <div class="stat-circle">
       <svg width="100" height="100">
-        <circle cx="50" cy="50" r="35" fill="none" stroke="#d4af37" stroke-width="2" />
-        <path id="averagePointsPath" d="M50,15 A35,35 0 1,1 50,85 A35,35 0 1,1 50,15" fill="none" />
-        <text font-family="'Cinzel', serif" font-size="12" font-weight="700" fill="#d4af37" text-anchor="middle">
-          <textPath href="#averagePointsPath" startOffset="25%">Average Points</textPath>
+        <path id="averagePointsPath" d="M 10 50 A 40 40 0 0 1 90 50" fill="none" />
+        <text font-family="'Cinzel', serif" font-size="14" font-weight="700" fill="#d4af37" text-anchor="middle">
+          <textPath href="#averagePointsPath" startOffset="50%">Average Points</textPath>
         </text>
       </svg>
       <span class="circle-value">{{ averagePoints !== null ? averagePoints.toFixed(1) : '-' }}</span>
     </div>
   </div>
 
+  <!-- Inverted order: Dice Roll Chart first -->
   <div class="chart-container" *ngIf="selectedPlayerId">
     <canvas id="diceRollChart"></canvas>
   </div>

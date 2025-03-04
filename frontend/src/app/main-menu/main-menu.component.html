@@ -2,6 +2,22 @@
   <img ngSrc="assets/catan-logo.png" alt="Catan Logo" class="logo mb-4" width="200" height="200">
   <div class="menu-options">
     <button class="btn-catan mb-3" (click)="startNewGame()">New Game</button>
+    <button class="btn-catan mb-3" (click)="createPlayer()">Create Player</button>
     <button class="btn-catan" (click)="viewHistory()">Game History</button>
+  </div>
+
+  <!-- Create Player Modal -->
+  <div class="modal" *ngIf="showCreatePlayerModal">
+    <div class="modal-content">
+      <h3>Create Player</h3>
+      <div>
+        <input type="text" [(ngModel)]="newPlayerName" placeholder="Player Name" class="form-control mb-2">
+        <input type="email" [(ngModel)]="newPlayerEmail" placeholder="Email" class="form-control mb-2">
+        <div class="modal-buttons">
+          <button class="btn-catan" (click)="savePlayer()">Save</button>
+          <button class="btn-catan" (click)="closeCreatePlayerModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

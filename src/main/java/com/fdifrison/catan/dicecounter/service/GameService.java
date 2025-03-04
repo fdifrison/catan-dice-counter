@@ -1,19 +1,23 @@
 package com.fdifrison.catan.dicecounter.service;
 
 import com.fdifrison.catan.dicecounter.domain.Game;
+import com.fdifrison.catan.dicecounter.domain.GlobalPlayer;
 import com.fdifrison.catan.dicecounter.domain.Player;
 import com.fdifrison.catan.dicecounter.domain.Roll;
 import com.fdifrison.catan.dicecounter.domain.Turn;
 import com.fdifrison.catan.dicecounter.dto.EndGameDTO;
 import com.fdifrison.catan.dicecounter.dto.GameCreateDTO;
 import com.fdifrison.catan.dicecounter.dto.GameDTO;
+import com.fdifrison.catan.dicecounter.dto.GlobalPlayerDTO;
 import com.fdifrison.catan.dicecounter.dto.PlayerEndDTO;
 import com.fdifrison.catan.dicecounter.dto.TurnCreateDTO;
 import com.fdifrison.catan.dicecounter.dto.TurnDTO;
 import com.fdifrison.catan.dicecounter.mapper.GameMapper;
+import com.fdifrison.catan.dicecounter.mapper.GlobalPlayerMapper;
 import com.fdifrison.catan.dicecounter.mapper.PlayerMapper;
 import com.fdifrison.catan.dicecounter.mapper.TurnMapper;
 import com.fdifrison.catan.dicecounter.repository.GameRepository;
+import com.fdifrison.catan.dicecounter.repository.GlobalPlayerRepository;
 import com.fdifrison.catan.dicecounter.repository.PlayerRepository;
 import com.fdifrison.catan.dicecounter.repository.RollRepository;
 import com.fdifrison.catan.dicecounter.repository.TurnRepository;
@@ -37,21 +41,26 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
+    private final GlobalPlayerRepository globalPlayerRepository;
     private final RollRepository rollRepository;
     private final TurnRepository turnRepository;
     private final GameMapper gameMapper;
     private final PlayerMapper playerMapper;
+    private final GlobalPlayerMapper globalPlayerMapper;
     private final TurnMapper turnMapper;
 
     public GameService(GameRepository gameRepository, PlayerRepository playerRepository,
-                       RollRepository rollRepository, TurnRepository turnRepository,
-                       GameMapper gameMapper, PlayerMapper playerMapper, TurnMapper turnMapper) {
+                       GlobalPlayerRepository globalPlayerRepository, RollRepository rollRepository,
+                       TurnRepository turnRepository, GameMapper gameMapper, PlayerMapper playerMapper,
+                       GlobalPlayerMapper globalPlayerMapper, TurnMapper turnMapper) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
+        this.globalPlayerRepository = globalPlayerRepository;
         this.rollRepository = rollRepository;
         this.turnRepository = turnRepository;
         this.gameMapper = gameMapper;
         this.playerMapper = playerMapper;
+        this.globalPlayerMapper = globalPlayerMapper;
         this.turnMapper = turnMapper;
     }
 
@@ -79,6 +88,21 @@ public class GameService {
                 });
     }
 
+    @Transactional(readOnly = true)
+    public List<GlobalPlayerDTO> getAllGlobalPlayers() {
+        return globalPlayerRepository.findAll().stream()
+                .map(globalPlayerMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public GlobalPlayerDTO createGlobalPlayer(GlobalPlayerDTO globalPlayerDTO) {
+        GlobalPlayer globalPlayer = globalPlayerMapper.toEntity(globalPlayerDTO);
+        globalPlayer.setId(UUID.randomUUID().hashCode());
+        GlobalPlayer savedPlayer = globalPlayerRepository.save(globalPlayer);
+        return globalPlayerMapper.toDto(savedPlayer);
+    }
+
     public long calculateGameDuration(GameDTO game) {
         if (game.endTimestamp() == null || game.startTimestamp() == null) {
             System.out.println("Game duration not calculated: endTimestamp=" + game.endTimestamp() + ", startTimestamp=" + game.startTimestamp());
@@ -103,7 +127,7 @@ public class GameService {
                 .map(entry -> turns.stream()
                         .filter(t -> t.getPlayer().getId().equals(entry.getKey()))
                         .findFirst()
-                        .map(t -> t.getPlayer().getName())
+                        .map(t -> t.getPlayer().getGlobalPlayer().getName())
                         .orElse("Unknown"))
                 .orElse("No turns recorded");
     }
@@ -115,11 +139,15 @@ public class GameService {
         int gameId = UUID.randomUUID().hashCode();
         game.setId(gameId);
         List<Player> players = gameCreateDTO.players().stream()
-                .map(playerMapper::toEntity)
-                .peek(player -> {
+                .map(dto -> {
+                    Player player = playerMapper.toEntity(dto);
+                    GlobalPlayer globalPlayer = globalPlayerRepository.findById(dto.globalPlayerId())
+                            .orElseThrow(() -> new IllegalArgumentException("Global player not found: " + dto.globalPlayerId()));
+                    player.setGlobalPlayer(globalPlayer);
                     player.setGame(game);
                     player.setId(UUID.randomUUID().hashCode());
-                    System.out.println("Created player: id=" + player.getId() + ", name=" + player.getName() + ", order=" + player.getOrder());
+                    System.out.println("Created player: id=" + player.getId() + ", globalPlayerId=" + dto.globalPlayerId() + ", order=" + player.getOrder() + ", color=" + player.getColor());
+                    return player;
                 })
                 .collect(Collectors.toList());
         game.setPlayers(players);
@@ -162,7 +190,7 @@ public class GameService {
     @Transactional
     public GameDTO endGame(Integer gameId, @Valid EndGameDTO endGameDTO) {
         System.out.println("Starting endGame for gameId: " + gameId + " at " + Instant.now());
-        System.out.println("Received endGameDTO: " + endGameDTO); // Add this
+        System.out.println("Received endGameDTO: " + endGameDTO);
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         game.setEndTimestamp(Instant.now());
@@ -170,6 +198,7 @@ public class GameService {
         endGameDTO.players().forEach(playerEnd -> {
             Player player = playerRepository.findById(playerEnd.id())
                     .orElseThrow(() -> new IllegalArgumentException("Player not found: " + playerEnd.id()));
+            System.out.println("Updating player " + playerEnd.id() + " with rank: " + playerEnd.rank());
             player.setRank(playerEnd.rank());
             player.setPoints(playerEnd.points());
             playerRepository.save(player);

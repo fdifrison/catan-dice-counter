@@ -18,14 +18,15 @@ public class Player {
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String color;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "global_player_id", nullable = false)
+    private GlobalPlayer globalPlayer;
 
     @Column(name = "order_number", nullable = false)
     private int order;
+
+    @Column(nullable = false)
+    private String color;
 
     private Integer rank;
 

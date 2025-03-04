@@ -3,6 +3,7 @@ package com.fdifrison.catan.dicecounter.controller;
 import com.fdifrison.catan.dicecounter.dto.EndGameDTO;
 import com.fdifrison.catan.dicecounter.dto.GameCreateDTO;
 import com.fdifrison.catan.dicecounter.dto.GameDTO;
+import com.fdifrison.catan.dicecounter.dto.GlobalPlayerDTO;
 import com.fdifrison.catan.dicecounter.dto.TurnCreateDTO;
 import com.fdifrison.catan.dicecounter.dto.TurnDTO;
 import com.fdifrison.catan.dicecounter.service.GameService;
@@ -71,6 +72,17 @@ public class GameController {
     public ResponseEntity<Void> deleteGame(@PathVariable Integer id) {
         gameService.deleteGame(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/players")
+    public ResponseEntity<List<GlobalPlayerDTO>> getAllGlobalPlayers() {
+        return ResponseEntity.ok(gameService.getAllGlobalPlayers());
+    }
+
+    @PostMapping("/players")
+    public ResponseEntity<GlobalPlayerDTO> createGlobalPlayer(@Valid @RequestBody GlobalPlayerDTO globalPlayerDTO) {
+        GlobalPlayerDTO createdPlayer = gameService.createGlobalPlayer(globalPlayerDTO);
+        return ResponseEntity.ok(createdPlayer);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

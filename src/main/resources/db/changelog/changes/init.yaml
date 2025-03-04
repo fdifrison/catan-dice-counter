@@ -1,8 +1,27 @@
 databaseChangeLog:
   - changeSet:
-      id: 2025-03-03-init
+      id: 2025-03-04-init
       author: grok
       changes:
+        - createTable:
+            tableName: global_player
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
         - createTable:
             tableName: game
             columns:
@@ -40,18 +59,20 @@ databaseChangeLog:
                     foreignKeyName: fk_player_game
                     references: game(id)
               - column:
-                  name: name
-                  type: varchar(255)
+                  name: global_player_id
+                  type: integer
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_player_global_player
+                    references: global_player(id)
+              - column:
+                  name: order_number
+                  type: int
                   constraints:
                     nullable: false
               - column:
                   name: color
                   type: varchar(50)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: order_number
-                  type: int
                   constraints:
                     nullable: false
               - column:

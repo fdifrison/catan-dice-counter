@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../services/game.service';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-game-setup',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DragDropModule],
   templateUrl: './game-setup.component.html',
   styleUrls: ['./game-setup.component.css']
 })
@@ -60,6 +62,7 @@ export class GameSetupComponent implements OnInit {
     } else if (this.playerCount < currentCount) {
       this.players = this.players.slice(0, this.playerCount);
     }
+    this.players.forEach((p, i) => p.order = i + 1); // Reassign orders
   }
 
   isPlayerSelected(globalPlayerId: number, currentIndex: number): boolean {
@@ -70,13 +73,16 @@ export class GameSetupComponent implements OnInit {
     const selectedPlayerId = this.players[index].globalPlayerId;
     const existingIndex = this.players.findIndex((p, i) => i !== index && p.globalPlayerId === selectedPlayerId);
     if (existingIndex !== -1) {
-      // Swap players if the selected player is already in another position
       const tempPlayer = { ...this.players[index] };
       this.players[index] = { ...this.players[existingIndex], order: index + 1 };
       this.players[existingIndex] = { ...tempPlayer, order: existingIndex + 1 };
     }
-    // Ensure order reflects array position
     this.players.forEach((p, i) => p.order = i + 1);
+  }
+
+  drop(event: CdkDragDrop<any[]>) {
+    moveItemInArray(this.players, event.previousIndex, event.currentIndex);
+    this.players.forEach((p, i) => p.order = i + 1); // Update order after drag
   }
 
   startGame() {

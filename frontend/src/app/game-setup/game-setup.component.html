@@ -9,12 +9,12 @@
     </select>
   </div>
 
-  <div class="player-list">
-    <div class="player-card" *ngFor="let player of players; let i = index" [ngStyle]="{'background-color': getMutedColor(player.color)}">
+  <div class="player-list" cdkDropList (cdkDropListDropped)="drop($event)">
+    <div class="player-card" *ngFor="let player of players; let i = index" [ngStyle]="{'background-color': getMutedColor(player.color)}" cdkDrag>
       <div class="player-selection">
         <select class="form-select mb-1" [(ngModel)]="player.globalPlayerId" (change)="updatePlayerSelection(i)">
           <option *ngFor="let gp of availablePlayers" [value]="gp.id" [disabled]="isPlayerSelected(gp.id, i)">
-            {{ gp.name }} <!-- Changed: Show only name -->
+            {{ gp.name }}
           </option>
         </select>
         <select class="form-select mb-1" [(ngModel)]="player.color">

@@ -76,7 +76,12 @@ export class EndGameComponent implements OnInit {
       return;
     }
 
-    const endGameData = this.players.value;
+    const endGameData = this.players.value.map((p: any) => ({
+      id: p.id,
+      rank: p.rank !== null ? p.rank : 999, // Default null ranks to 999
+      points: p.points
+    }));
+    console.log('Sending endGameData:', endGameData);
 
     this.gameService.endGame(this.game.id, endGameData).subscribe({
       next: (updatedGame) => {
@@ -84,9 +89,12 @@ export class EndGameComponent implements OnInit {
         this.endGameForm.setControl('players', this.fb.array(updatedGame.players.map((p: any) => this.createPlayerFormGroup(p))));
         this.gameDuration = this.calculateDuration(updatedGame.startTimestamp, updatedGame.endTimestamp);
         console.log('Updated game duration:', this.gameDuration);
+        console.log('Updated game players:', updatedGame.players);
         this.cdr.detectChanges();
         const rankedPlayers = [...this.players.value].sort((a: any, b: any) => (a.rank || 999) - (b.rank || 999));
-        this.winner = rankedPlayers[0];
+        console.log('Ranked players:', rankedPlayers);
+        this.winner = rankedPlayers.find(p => p.rank === 1) || rankedPlayers[0];
+        console.log('Selected winner:', this.winner);
         this.showVictoryModal = true;
         this.startConfetti();
       },
@@ -96,7 +104,6 @@ export class EndGameComponent implements OnInit {
       }
     });
   }
-
   calculateDuration(startTimestamp: string | undefined, endTimestamp: string | undefined): number {
     if (!startTimestamp || !endTimestamp) {
       console.log('Duration not calculated: startTimestamp=' + startTimestamp + ', endTimestamp=' + endTimestamp);

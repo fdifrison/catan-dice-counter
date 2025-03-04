@@ -162,6 +162,7 @@ public class GameService {
     @Transactional
     public GameDTO endGame(Integer gameId, @Valid EndGameDTO endGameDTO) {
         System.out.println("Starting endGame for gameId: " + gameId + " at " + Instant.now());
+        System.out.println("Received endGameDTO: " + endGameDTO); // Add this
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         game.setEndTimestamp(Instant.now());
@@ -175,7 +176,7 @@ public class GameService {
         });
 
         Game savedGame = gameRepository.save(game);
-        Hibernate.initialize(savedGame.getPlayers());  // Ensure players are loaded
+        Hibernate.initialize(savedGame.getPlayers());
         Hibernate.initialize(savedGame.getRolls());
         Hibernate.initialize(savedGame.getTurns());
         GameDTO gameDTO = gameMapper.toDto(savedGame);

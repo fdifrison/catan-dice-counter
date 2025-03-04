@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
+import {Router} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators} from '@angular/forms';
 import confetti from 'canvas-confetti';
-import { GameService } from '../services/game.service';
+import {GameService} from '../services/game.service';
 
 @Component({
   selector: 'app-end-game',
@@ -51,8 +51,8 @@ export class EndGameComponent implements OnInit {
       name: [player.name],
       color: [player.color],
       order: [player.order],
-      rank: [null, Validators.required],
-      points: [null, [Validators.required, Validators.min(0)]]
+      rank: [player.rank, Validators.required], // Ensure rank is set from backend
+      points: [player.points, [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -66,7 +66,7 @@ export class EndGameComponent implements OnInit {
       .filter((_, i) => i !== playerIndex)
       .map(control => control.get('rank')?.value)
       .filter(r => r !== null);
-    return Array.from({ length: totalPlayers }, (_, i) => i + 1)
+    return Array.from({length: totalPlayers}, (_, i) => i + 1)
       .filter(rank => !usedRanks.includes(rank));
   }
 
@@ -78,7 +78,7 @@ export class EndGameComponent implements OnInit {
 
     const endGameData = this.players.value.map((p: any) => ({
       id: p.id,
-      rank: p.rank !== null ? p.rank : 999, // Default null ranks to 999
+      rank: p.rank !== null ? p.rank : 999,
       points: p.points
     }));
     console.log('Sending endGameData:', endGameData);
@@ -91,7 +91,7 @@ export class EndGameComponent implements OnInit {
         console.log('Updated game duration:', this.gameDuration);
         console.log('Updated game players:', updatedGame.players);
         this.cdr.detectChanges();
-        const rankedPlayers = [...this.players.value].sort((a: any, b: any) => (a.rank || 999) - (b.rank || 999));
+        const rankedPlayers = [...updatedGame.players].sort((a: any, b: any) => (a.rank || 999) - (b.rank || 999)); // Use backend data directly
         console.log('Ranked players:', rankedPlayers);
         this.winner = rankedPlayers.find(p => p.rank === 1) || rankedPlayers[0];
         console.log('Selected winner:', this.winner);
@@ -104,6 +104,7 @@ export class EndGameComponent implements OnInit {
       }
     });
   }
+
   calculateDuration(startTimestamp: string | undefined, endTimestamp: string | undefined): number {
     if (!startTimestamp || !endTimestamp) {
       console.log('Duration not calculated: startTimestamp=' + startTimestamp + ', endTimestamp=' + endTimestamp);
@@ -120,7 +121,7 @@ export class EndGameComponent implements OnInit {
     confetti({
       particleCount: 100,
       spread: 70,
-      origin: { y: 0.6 },
+      origin: {y: 0.6},
       colors: ['#d4af37', '#8B0000', '#FFFFFF'],
       zIndex: 1002
     });
@@ -129,14 +130,14 @@ export class EndGameComponent implements OnInit {
         particleCount: 50,
         angle: 60,
         spread: 55,
-        origin: { x: 0 },
+        origin: {x: 0},
         zIndex: 1002
       });
       confetti({
         particleCount: 50,
         angle: 120,
         spread: 55,
-        origin: { x: 1 },
+        origin: {x: 1},
         zIndex: 1002
       });
     }, 500);

@@ -29,6 +29,7 @@ FROM eclipse-temurin:23-jre
 WORKDIR /app
 COPY --from=backend-build /app/target/dice-counter-0.0.1-SNAPSHOT.jar app.jar
 #VOLUME /data
+RUN mkdir -p /app/data
 EXPOSE 8080
 ENV PORT=8080
 ENTRYPOINT ["java", "-Xmx256m", "-jar", "app.jar"]

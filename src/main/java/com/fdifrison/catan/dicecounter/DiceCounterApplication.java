@@ -26,7 +26,7 @@ class HomeController {
 
     @GetMapping(value = {"", "/", "/{path:[^.]*}"})
     public String home() {
-        logger.info("Forwarding to /browser/index.html");
-        return "forward:/browser/index.html";
+        logger.info("Forwarding to /index.html");
+        return "forward:/index.html";
     }
 }

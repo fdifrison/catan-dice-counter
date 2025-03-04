@@ -21,6 +21,6 @@ spring:
     show-sql: true
     open-in-view: off
   liquibase:
-    change-log: classpath:db/changelog/init.yaml
+    change-log: classpath:db/changelog/changes/init.yaml
 server:
   port: ${PORT:8080}

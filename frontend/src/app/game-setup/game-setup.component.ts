@@ -134,4 +134,8 @@ export class GameSetupComponent implements OnInit {
     };
     return mutedColors[color] || 'rgba(0, 0, 0, 0.8)';
   }
+
+  returnHome() {
+    this.router.navigate(['/']); // Navigate back to main menu
+  }
 }

@@ -25,7 +25,7 @@
 }
 
 button {
-  width: 220px;
+  width: 275px; /* Increased from 220px to fit "Player Statistics" */
   margin: 0 auto;
 }
 
@@ -67,5 +67,5 @@ button {
 .modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 10px; /* Add padding between buttons */
+  gap: 10px;
 }

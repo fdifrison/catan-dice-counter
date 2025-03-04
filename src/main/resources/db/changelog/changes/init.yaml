@@ -149,3 +149,55 @@ databaseChangeLog:
                   type: text
                   constraints:
                     nullable: false
+  - changeSet:
+      id: 2025-03-04-prepopulate-players
+      author: grok
+      changes:
+        - insert:
+            tableName: global_player
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: '1'
+              - column:
+                  name: name
+                  value: "Pisco"
+              - column:
+                  name: email
+                  value: "l.piscaglia92@gmail.com"
+        - insert:
+            tableName: global_player
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: '2'
+              - column:
+                  name: name
+                  value: "Mich"
+              - column:
+                  name: email
+                  value: "michele.roberti7@gmail.com"
+        - insert:
+            tableName: global_player
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: '3'
+              - column:
+                  name: name
+                  value: "Berna"
+              - column:
+                  name: email
+                  value: "luca.bernabini1989@gmail.com"
+        - insert:
+            tableName: global_player
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: '4'
+              - column:
+                  name: name
+                  value: "Giova"
+              - column:
+                  name: email
+                  value: "ing.giovanni.frison@gmail.com"

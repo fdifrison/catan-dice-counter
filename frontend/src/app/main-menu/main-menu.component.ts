@@ -67,4 +67,8 @@ export class MainMenuComponent {
   viewHistory() {
     this.router.navigate(['/history']);
   }
+
+  viewPlayerStats() {
+    this.router.navigate(['/player-statistics']); // New navigation method
+  }
 }

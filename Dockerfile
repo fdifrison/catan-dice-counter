@@ -4,12 +4,11 @@ WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend/ ./
-RUN npm run build -- --configuration production
+RUN npm run build -- --configuration production --base-href=/
 
 # Stage 2: Build Backend
 FROM eclipse-temurin:23-jdk AS backend-build
 WORKDIR /app
-# Install Maven 3.9.6
 ARG MAVEN_VERSION=3.9.6
 RUN apt-get update && apt-get install -y curl \
     && curl -fsSL -o /tmp/maven.tar.gz https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
@@ -21,7 +20,9 @@ COPY pom.xml ./
 COPY src ./src
 COPY --from=frontend-build /app/frontend/dist/frontend/browser ./src/main/resources/static
 RUN mvn dependency:go-offline
-RUN mvn package -DskipTests -Dfrontend.skip=true  # Ensure files are included before packaging
+RUN mvn resources:resources
+RUN mvn package -DskipTests -Dfrontend.skip=true
+RUN jar tf target/dice-counter-0.0.1-SNAPSHOT.jar | grep static || echo "No static files found"
 
 # Stage 3: Runtime
 FROM eclipse-temurin:23-jre

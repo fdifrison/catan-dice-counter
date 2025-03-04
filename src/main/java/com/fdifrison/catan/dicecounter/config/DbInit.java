@@ -8,6 +8,7 @@ import java.io.IOException;
 
 @Component
 public class DbInit {
+    // TODO refactor and link to variable
     private static final String DB_PATH = "/app/data/database.db";
 
     @PostConstruct

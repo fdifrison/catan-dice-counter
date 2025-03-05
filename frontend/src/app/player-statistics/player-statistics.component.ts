@@ -63,7 +63,6 @@ export class PlayerStatisticsComponent implements OnInit {
     const ctx = document.getElementById('turnTimeChart') as HTMLCanvasElement;
     if (this.turnTimeChart) this.turnTimeChart.destroy();
 
-    const player = this.players.find(p => p.id === this.selectedPlayerId);
     this.turnTimeChart = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -71,7 +70,7 @@ export class PlayerStatisticsComponent implements OnInit {
         datasets: [{
           label: 'Turn Times',
           data: turnData,
-          backgroundColor: this.getPlayerColor(player?.color || 'red'),
+          backgroundColor: '#d4af37', // Gold color
           borderColor: '#000000',
           borderWidth: 1
         }]
@@ -114,9 +113,9 @@ export class PlayerStatisticsComponent implements OnInit {
       data: {
         labels: Array.from({ length: 11 }, (_, i) => (i + 2).toString()),
         datasets: [{
-          label: `${player?.name || 'Player'}'s Roll Distribution`,
+          label: `${player?.name || 'Player'}'s Roll Distribution`, // Label still defined but not displayed
           data: rollData,
-          backgroundColor: this.getPlayerColor(player?.color || 'red'),
+          backgroundColor: '#d4af37', // Gold color
           borderColor: '#000000',
           borderWidth: 1
         }]
@@ -125,7 +124,7 @@ export class PlayerStatisticsComponent implements OnInit {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: true, position: 'bottom', labels: { font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#000000' } },
+          legend: { display: false }, // Remove legend
           title: { display: true, text: 'Dice Roll Distribution', font: { family: 'Cinzel', size: 20, weight: 800 }, color: '#d4af37' }
         },
         scales: {

@@ -55,7 +55,7 @@
   font-family: 'Cinzel', serif;
   font-size: 18px;
   text-align: center;
-  width: 80px; /* Widened from 60px */
+  width: 80px;
   cursor: pointer;
   appearance: none;
 }
@@ -141,7 +141,9 @@
 
 .controls {
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Stack buttons vertically */
+  gap: 10px; /* Add spacing between buttons */
+  align-items: center; /* Center buttons horizontally */
   margin-top: 5px;
 }
 
@@ -150,7 +152,6 @@
   padding: 6px;
 }
 
-/* Existing styles remain unchanged, adding new ones below */
 .modal-content {
   background: rgba(255, 245, 238, 0.9);
   padding: 20px;
@@ -160,14 +161,14 @@
   color: #d4af37;
   font-weight: 700;
   font-size: 20px;
-  width: 300px; /* Added for consistency */
+  width: 300px;
 }
 
 .modal-content p {
-  margin-bottom: 15px; /* Ensure spacing before button */
+  margin-bottom: 15px;
 }
 
 .modal-content button {
-  display: block; /* Center the button */
-  margin: 0 auto; /* Horizontally center */
+  display: block;
+  margin: 0 auto;
 }

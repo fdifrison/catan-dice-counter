@@ -36,75 +36,30 @@ export class PlayerStatisticsComponent implements OnInit {
   loadPlayerStats() {
     if (!this.selectedPlayerId) return;
 
-    console.log('Selected Player ID:', this.selectedPlayerId); // Debug selected ID
-    this.gameService.getAllGames().subscribe({
-      next: (games) => {
-        console.log('All games:', games);
-        const playerGames = games.filter((game: any) => {
-          const match = game.players.some((p: any) => {
-            const matchCondition = p.globalPlayerId === this.selectedPlayerId;
-            console.log(`Checking player: globalPlayerId=${p.globalPlayerId}, selectedPlayerId=${this.selectedPlayerId}, match=${matchCondition}`);
-            return matchCondition;
-          });
-          return match;
-        });
-        console.log('Player Games:', playerGames);
+    console.log('Fetching stats for globalPlayerId:', this.selectedPlayerId);
+    this.gameService.getPlayerStats(this.selectedPlayerId).subscribe({
+      next: (stats) => {
+        console.log('Received player stats:', stats);
 
-        if (playerGames.length === 0) {
-          console.warn('No games found for globalPlayerId:', this.selectedPlayerId);
-          this.luckyNumber = null;
-          this.totalPoints = 0;
-          this.averagePoints = null;
-          this.initDiceRollChart({});
-          this.initTurnTimeChart([], 0);
-          return;
-        }
+        this.totalPoints = stats.totalPoints;
+        this.averagePoints = stats.averagePoints;
+        this.luckyNumber = stats.luckyNumber;
 
-        // Player data for points
-        const playerData = playerGames.map((game: any) =>
-          game.players.find((p: any) => p.globalPlayerId === this.selectedPlayerId)
-        );
-        console.log('Player Data:', playerData);
-        this.totalPoints = playerData.reduce((sum: number, p: any) => sum + (p.points || 0), 0);
-        this.averagePoints = playerData.length > 0 && this.totalPoints !== null ? this.totalPoints / playerData.length : null;
+        const rollData = Array.from({ length: 11 }, (_, i) => stats.rollDistribution[i + 2] || 0);
+        this.initDiceRollChart(rollData);
 
-        // Rolls
-        const rolls = playerGames.flatMap((game: any) => {
-          const player = game.players.find((p: any) => p.globalPlayerId === this.selectedPlayerId);
-          const playerIndex = player ? player.order - 1 : -1;
-          return game.rolls.filter((r: any) => r.playerIndex === playerIndex);
-        });
-        const rollCounts: { [key: number]: number } = rolls.reduce((acc: { [key: number]: number }, roll: any) => {
-          acc[roll.number] = (acc[roll.number] || 0) + 1;
-          return acc;
-        }, {});
-        console.log('Rolls:', rolls, 'Roll Counts:', rollCounts);
-
-        if (rolls.length > 0) {
-          const rollEntries = Object.entries(rollCounts) as [string, number][];
-          this.luckyNumber = Number(rollEntries.reduce((a: [string, number], b: [string, number]) => a[1] > b[1] ? a : b, ['0', 0])[0]);
-        } else {
-          this.luckyNumber = null;
-        }
-
-        // Turn times
-        const turnDurations = playerGames.flatMap((game: any) => {
-          const player = game.players.find((p: any) => p.globalPlayerId === this.selectedPlayerId);
-          return game.turns
-            .filter((t: any) => t.playerId === player?.id)
-            .map((t: any) => (new Date(t.endTimestamp).getTime() - new Date(t.startTimestamp).getTime()) / 1000);
-        });
-        const totalTime = turnDurations.reduce((sum: number, time: number) => sum + time, 0) || 0;
-        console.log('Turn Durations:', turnDurations, 'Total Time:', totalTime);
-
-        this.initDiceRollChart(rollCounts);
-        this.initTurnTimeChart(turnDurations, totalTime);
+        const turnData = [
+          stats.longestTurnSeconds || 0,
+          stats.shortestTurnSeconds || 0,
+          stats.averageTurnSeconds || 0
+        ];
+        this.initTurnTimeChart(turnData);
       },
-      error: (err) => console.error('Failed to load games:', err)
+      error: (err) => console.error('Failed to load player stats:', err)
     });
   }
 
-  initTurnTimeChart(turnDurations: number[], totalTime: number) {
+  initTurnTimeChart(turnData: number[]) {
     const ctx = document.getElementById('turnTimeChart') as HTMLCanvasElement;
     if (this.turnTimeChart) this.turnTimeChart.destroy();
 
@@ -115,11 +70,7 @@ export class PlayerStatisticsComponent implements OnInit {
         labels: ['Longest', 'Shortest', 'Average'],
         datasets: [{
           label: 'Turn Times',
-          data: [
-            turnDurations.length > 0 ? Math.max(...turnDurations) : 0,
-            turnDurations.length > 0 ? Math.min(...turnDurations) : 0,
-            turnDurations.length > 0 ? totalTime / turnDurations.length : 0
-          ],
+          data: turnData,
           backgroundColor: this.getPlayerColor(player?.color || 'red'),
           borderColor: '#000000',
           borderWidth: 1
@@ -153,14 +104,11 @@ export class PlayerStatisticsComponent implements OnInit {
     });
   }
 
-  initDiceRollChart(rollCounts: { [key: number]: number }) {
+  initDiceRollChart(rollData: number[]) {
     const ctx = document.getElementById('diceRollChart') as HTMLCanvasElement;
     if (this.diceRollChart) this.diceRollChart.destroy();
 
     const player = this.players.find(p => p.id === this.selectedPlayerId);
-    const rollData = Array.from({ length: 11 }, (_, i) => rollCounts[i + 2] || 0);
-    console.log('Roll Data for Chart:', rollData);
-
     this.diceRollChart = new Chart(ctx, {
       type: 'bar',
       data: {

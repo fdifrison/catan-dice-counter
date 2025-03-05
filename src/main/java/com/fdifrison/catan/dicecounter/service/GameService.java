@@ -10,6 +10,7 @@ import com.fdifrison.catan.dicecounter.dto.GameCreateDTO;
 import com.fdifrison.catan.dicecounter.dto.GameDTO;
 import com.fdifrison.catan.dicecounter.dto.GlobalPlayerDTO;
 import com.fdifrison.catan.dicecounter.dto.PlayerEndDTO;
+import com.fdifrison.catan.dicecounter.dto.PlayerStatsDTO;
 import com.fdifrison.catan.dicecounter.dto.TurnCreateDTO;
 import com.fdifrison.catan.dicecounter.dto.TurnDTO;
 import com.fdifrison.catan.dicecounter.mapper.GameMapper;
@@ -23,21 +24,22 @@ import com.fdifrison.catan.dicecounter.repository.RollRepository;
 import com.fdifrison.catan.dicecounter.repository.TurnRepository;
 import jakarta.validation.Valid;
 import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Validated
 @Service
 public class GameService {
+
+    private static final Logger log = LoggerFactory.getLogger(GameService.class);
 
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
@@ -105,11 +107,11 @@ public class GameService {
 
     public long calculateGameDuration(GameDTO game) {
         if (game.endTimestamp() == null || game.startTimestamp() == null) {
-            System.out.println("Game duration not calculated: endTimestamp=" + game.endTimestamp() + ", startTimestamp=" + game.startTimestamp());
+            log.info("Game duration not calculated: endTimestamp={}, startTimestamp={}", game.endTimestamp(), game.startTimestamp());
             return 0L;
         }
         long duration = Duration.between(game.startTimestamp(), game.endTimestamp()).getSeconds();
-        System.out.println("Calculated game duration: " + duration + " seconds");
+        log.info("Calculated game duration: {} seconds", duration);
         return duration;
     }
 
@@ -134,7 +136,7 @@ public class GameService {
 
     @Transactional
     public GameDTO createGame(@Valid GameCreateDTO gameCreateDTO) {
-        System.out.println("Starting createGame at " + Instant.now());
+        log.info("Starting createGame at {}", Instant.now());
         Game game = gameMapper.toEntity(gameCreateDTO);
         int gameId = UUID.randomUUID().hashCode();
         game.setId(gameId);
@@ -146,19 +148,20 @@ public class GameService {
                     player.setGlobalPlayer(globalPlayer);
                     player.setGame(game);
                     player.setId(UUID.randomUUID().hashCode());
-                    System.out.println("Created player: id=" + player.getId() + ", globalPlayerId=" + dto.globalPlayerId() + ", order=" + player.getOrder() + ", color=" + player.getColor());
+                    log.info("Created player: id={}, globalPlayerId={}, order={}, color={}",
+                            player.getId(), dto.globalPlayerId(), player.getOrder(), player.getColor());
                     return player;
                 })
                 .collect(Collectors.toList());
         game.setPlayers(players);
         Game savedGame = gameRepository.save(game);
-        System.out.println("Finished createGame at " + Instant.now());
+        log.info("Finished createGame at {}", Instant.now());
         return gameMapper.toDto(savedGame);
     }
 
     @Transactional
     public TurnDTO recordTurn(Integer gameId, @Valid TurnCreateDTO turnCreateDTO) {
-        System.out.println("Starting recordTurn for gameId: " + gameId + " at " + Instant.now());
+        log.info("Starting recordTurn for gameId: {} at {}", gameId, Instant.now());
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         Player player = playerRepository.findById(turnCreateDTO.playerId())
@@ -179,18 +182,19 @@ public class GameService {
             roll.setTurn(savedTurn);
             roll.setNumber(turnCreateDTO.rollNumber());
             roll.setPlayerIndex(player.getOrder() - 1);  // 0-based index
-            System.out.println("Saved roll: id=" + roll.getId() + ", gameId=" + gameId + ", turnId=" + turnId + ", number=" + roll.getNumber() + ", playerIndex=" + roll.getPlayerIndex());
+            log.info("Saved roll: id={}, gameId={}, turnId={}, number={}, playerIndex={}",
+                    roll.getId(), gameId, turnId, roll.getNumber(), roll.getPlayerIndex());
             rollRepository.save(roll);
         }
 
-        System.out.println("Finished recordTurn for gameId: " + gameId + " at " + Instant.now());
+        log.info("Finished recordTurn for gameId: {} at {}", gameId, Instant.now());
         return turnMapper.toDto(savedTurn);
     }
 
     @Transactional
     public GameDTO endGame(Integer gameId, @Valid EndGameDTO endGameDTO) {
-        System.out.println("Starting endGame for gameId: " + gameId + " at " + Instant.now());
-        System.out.println("Received endGameDTO: " + endGameDTO);
+        log.info("Starting endGame for gameId: {} at {}", gameId, Instant.now());
+        log.info("Received endGameDTO: {}", endGameDTO);
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         game.setEndTimestamp(Instant.now());
@@ -198,7 +202,7 @@ public class GameService {
         endGameDTO.players().forEach(playerEnd -> {
             Player player = playerRepository.findById(playerEnd.id())
                     .orElseThrow(() -> new IllegalArgumentException("Player not found: " + playerEnd.id()));
-            System.out.println("Updating player " + playerEnd.id() + " with rank: " + playerEnd.rank());
+            log.info("Updating player {} with rank: {}", playerEnd.id(), playerEnd.rank());
             player.setRank(playerEnd.rank());
             player.setPoints(playerEnd.points());
             playerRepository.save(player);
@@ -209,8 +213,8 @@ public class GameService {
         Hibernate.initialize(savedGame.getRolls());
         Hibernate.initialize(savedGame.getTurns());
         GameDTO gameDTO = gameMapper.toDto(savedGame);
-        System.out.println("EndGame DTO: endTimestamp=" + gameDTO.endTimestamp() + ", startTimestamp=" + gameDTO.startTimestamp());
-        System.out.println("Finished endGame for gameId: " + gameId + " at " + Instant.now());
+        log.info("EndGame DTO: endTimestamp={}, startTimestamp={}", gameDTO.endTimestamp(), gameDTO.startTimestamp());
+        log.info("Finished endGame for gameId: {} at {}", gameId, Instant.now());
         return gameDTO;
     }
 
@@ -219,5 +223,81 @@ public class GameService {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
         gameRepository.delete(game);
+    }
+
+    @Transactional(readOnly = true)
+    public PlayerStatsDTO getPlayerStats(Integer globalPlayerId) {
+        log.info("Calculating stats for globalPlayerId: {}", globalPlayerId);
+
+        // Fetch all games
+        List<Game> games = gameRepository.findAll();
+        games.forEach(game -> {
+            Hibernate.initialize(game.getPlayers());
+            Hibernate.initialize(game.getRolls());
+            Hibernate.initialize(game.getTurns());
+        });
+
+        // Filter games for this player
+        List<Game> playerGames = games.stream()
+                .filter(game -> game.getPlayers().stream()
+                        .anyMatch(p -> p.getGlobalPlayer().getId().equals(globalPlayerId)))
+                .toList();
+
+        if (playerGames.isEmpty()) {
+            log.info("No games found for globalPlayerId: {}", globalPlayerId);
+            return new PlayerStatsDTO(0, null, null, new HashMap<>(), null, null, null);
+        }
+
+        // Aggregate points
+        List<Player> playerInstances = playerGames.stream()
+                .flatMap(game -> game.getPlayers().stream()
+                        .filter(p -> p.getGlobalPlayer().getId().equals(globalPlayerId)))
+                .toList();
+        int totalPoints = playerInstances.stream()
+                .mapToInt(p -> p.getPoints() != null ? p.getPoints() : 0)
+                .sum();
+        Double averagePoints = playerInstances.isEmpty() ? null : (double) totalPoints / playerInstances.size();
+
+        // Aggregate rolls
+        List<Roll> rolls = playerGames.stream()
+                .flatMap(game -> {
+                    Player player = game.getPlayers().stream()
+                            .filter(p -> p.getGlobalPlayer().getId().equals(globalPlayerId))
+                            .findFirst()
+                            .orElse(null);
+                    int playerIndex = player != null ? player.getOrder() - 1 : -1;
+                    return game.getRolls().stream()
+                            .filter(r -> r.getPlayerIndex() == playerIndex);
+                })
+                .toList();
+        Map<Integer, Integer> rollDistribution = rolls.stream()
+                .collect(Collectors.groupingBy(Roll::getNumber, Collectors.summingInt(r -> 1)));
+        Integer luckyNumber = rollDistribution.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+
+        // Aggregate turn times
+        List<Turn> turns = playerGames.stream()
+                .flatMap(game -> {
+                    Player player = game.getPlayers().stream()
+                            .filter(p -> p.getGlobalPlayer().getId().equals(globalPlayerId))
+                            .findFirst()
+                            .orElse(null);
+                    return game.getTurns().stream()
+                            .filter(t -> t.getPlayer().equals(player));
+                })
+                .toList();
+        List<Double> turnDurations = turns.stream()
+                .map(t -> (double) Duration.between(t.getStartTimestamp(), t.getEndTimestamp()).getSeconds())
+                .toList();
+        Double longestTurn = turnDurations.stream().max(Double::compareTo).orElse(null);
+        Double shortestTurn = turnDurations.stream().min(Double::compareTo).orElse(null);
+        Double averageTurn = turnDurations.isEmpty() ? null : turnDurations.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+
+        PlayerStatsDTO stats = new PlayerStatsDTO(totalPoints, averagePoints, luckyNumber, rollDistribution,
+                longestTurn, shortestTurn, averageTurn);
+        log.info("Stats calculated for globalPlayerId: {} - {}", globalPlayerId, stats);
+        return stats;
     }
 }

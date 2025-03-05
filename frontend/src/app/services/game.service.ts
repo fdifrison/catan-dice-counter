@@ -42,6 +42,16 @@ interface Game {
   turns: Turn[];
 }
 
+interface PlayerStats {
+  totalPoints: number;
+  averagePoints: number | null;
+  luckyNumber: number | null;
+  rollDistribution: { [key: number]: number };
+  longestTurnSeconds: number | null;
+  shortestTurnSeconds: number | null;
+  averageTurnSeconds: number | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -90,5 +100,9 @@ export class GameService {
 
   createGlobalPlayer(player: GlobalPlayer): Observable<GlobalPlayer> {
     return this.http.post<GlobalPlayer>(`${this.apiUrl}/players`, player);
+  }
+
+  getPlayerStats(globalPlayerId: number): Observable<PlayerStats> {
+    return this.http.get<PlayerStats>(`${this.apiUrl}/players/${globalPlayerId}/stats`);
   }
 }

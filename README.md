@@ -5,6 +5,12 @@ rolls, turns, game durations, and player statistics. Built with Angular 19 for t
 Java 23 for the backend, it uses SQLite for lightweight data persistence and provides a polished, thematic user
 interface.
 
+<div style="display: flex; justify-content: center; gap: 10px;">
+  <img src="./imgs/main.png" alt="Game Setup" width="225">
+  <img src="./imgs/gameplay.png" alt="Gameplay" width="225">
+  <img src="./imgs/stats.png" alt="Player Statistics" width="225">
+</div>
+
 ## Features
 
 - **Game Setup**: Create games with 2-5 players, assign unique colors, and set player order with drag-and-drop

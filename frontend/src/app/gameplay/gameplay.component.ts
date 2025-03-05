@@ -23,8 +23,9 @@ export class GameplayComponent implements OnInit, OnDestroy {
   turnNumber: number = 1;
   timerInterval: any;
   showEndGameModal: boolean = false;
+  showErrorModal: boolean = false; // New property for error modal
   turnStartTime: string | null = null;
-  isTurnEnding: boolean = false;  // Debounce flag
+  isTurnEnding: boolean = false;
 
   constructor(private router: Router, private gameService: GameService) {
     this.game = history.state.game;
@@ -107,7 +108,14 @@ export class GameplayComponent implements OnInit, OnDestroy {
   }
 
   endTurn() {
-    if (this.isTurnEnding) return;  // Prevent multiple clicks
+    if (this.isTurnEnding) return;
+
+    // Check if a number was selected
+    if (this.selectedNumber === null) {
+      this.showErrorModal = true; // Show error modal
+      return;
+    }
+
     this.isTurnEnding = true;
 
     const turn = {
@@ -115,7 +123,7 @@ export class GameplayComponent implements OnInit, OnDestroy {
       turnNumber: this.turnNumber,
       startTimestamp: this.turnStartTime!,
       endTimestamp: new Date().toISOString(),
-      rollNumber: this.selectedNumber || null
+      rollNumber: this.selectedNumber
     };
 
     this.gameService.recordTurn(this.game.id, turn).subscribe({
@@ -160,6 +168,10 @@ export class GameplayComponent implements OnInit, OnDestroy {
     if (confirmed) {
       this.router.navigate(['/end-game'], { state: { game: this.game } });
     }
+  }
+
+  closeErrorModal() {
+    this.showErrorModal = false; // Close error modal
   }
 
   updateChart() {

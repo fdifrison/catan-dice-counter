@@ -1,5 +1,4 @@
 <div class="gameplay-container">
-
   <!-- Player Info and Timer -->
   <div class="player-info-box text-center">
     <div class="player-turn">
@@ -26,12 +25,20 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- End Game Confirmation Modal -->
   <div class="modal" *ngIf="showEndGameModal">
     <div class="modal-content">
       <p>Are you sure you want to end the game?</p>
       <button class="btn-catan" (click)="endGame(true)">Yes</button>
       <button class="btn-catan" (click)="endGame(false)">No</button>
+    </div>
+  </div>
+
+  <!-- Error Modal for No Number Selected -->
+  <div class="modal" *ngIf="showErrorModal">
+    <div class="modal-content">
+      <p>You need to select a number first</p>
+      <button class="btn-catan" (click)="closeErrorModal()">OK</button>
     </div>
   </div>
 </div>
